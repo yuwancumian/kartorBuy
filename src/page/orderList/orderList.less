@@ -1,0 +1,44 @@
+.order-list{
+	.ot-panel-hd{
+		line-height: 36px;
+		font-size: 14px;
+	}
+	.ot-panel-ft{
+		text-align: right;
+	}
+	.btn-default{
+		padding: 6px 12px; 
+		font-size: 14px;
+		color: #666;
+		margin-left: 6px;
+	}
+	.order-in{
+    padding-left: 10px !important;
+    h4{
+      font-size: 14px;
+      padding-top: 12px;
+      padding-bottom: 14px;
+			margin: 0;
+			position: relative;
+			&:after{
+				content: '';
+				position: absolute;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				height: 1px;
+				border-bottom: 1px solid #e5e5e5;
+				transform: scaleY(0.5);
+			}
+      span{
+        float: right;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: normal;
+      }
+    }
+    .total-price{
+      color: #f43530;
+    }
+  }
+}
