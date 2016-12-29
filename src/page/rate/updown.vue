@@ -17,11 +17,14 @@
       toggleUp(){
         if (this.down == false){
           this.up = !this.up 
+          this.$emit('handleUp')
         }
+        
       },
       toggleDown(){
         if (this.up == false){
           this.down = !this.down
+          this.$emit('handleDown')
         }
       }
     }

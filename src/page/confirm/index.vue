@@ -7,15 +7,21 @@
       <div><img src="../../assets/images/eg01.jpg" alt=""> 罗森便利店 </div>
       <p>
          <span>已备货</span>
-         <a href=""> <i class="icon-nav"></i>导航</a>
+         <a :href="navUrl"> <i class="icon-nav"></i>导航</a>
       </p>
 
     </div>
     <div class="swipe">
     <mt-swipe :auto="4000">
-      <mt-swipe-item>1</mt-swipe-item>
-      <mt-swipe-item>2</mt-swipe-item>
-      <mt-swipe-item>3</mt-swipe-item>
+      <mt-swipe-item>
+        <img :src="slide[0]" alt="">
+      </mt-swipe-item>
+      <mt-swipe-item>
+        <img :src="slide[1]" alt="">
+      </mt-swipe-item>
+      <mt-swipe-item>
+        <img :src="slide[2]" alt="">
+      </mt-swipe-item>
     </mt-swipe>
     </div> 
     <div class="submit-btn" @click="handleConfirm">
@@ -27,7 +33,7 @@
         <a class="btn btn-default" @click="handleDetail">
             <span class="icon-cont"></span>订单详情
         </a>
-        <a class="btn btn-default" @click="handleContact" :href="'tel:'+telephone">
+        <a class="btn btn-default"  :href="'tel:'+telephone">
            <span class="icon-tele"></span>联系商家
         </a>
       </div>
@@ -37,37 +43,61 @@
 
 <script>
   import AppFooter from '../../components/footer'
-  import { Swipe, SwipeItem } from 'mint-ui'
+  import { Swipe, SwipeItem, MessageBox } from 'mint-ui'
   import { submitOrderConfirm } from '../../libs/api.js'
 
   export default {
     components: {
-      AppFooter, Swipe, SwipeItem
+      AppFooter, Swipe, SwipeItem, MessageBox
     },
     data (){
       return {
-        telephone: 0 
+        telephone: 0,
+        slide: []
       }
     },
     created () {
-      localStorage.setItem('telephone', '023-66668888')
-      this.telephone = localStorage.getItem('telephone')
+      this.telephone = store.get('contact_mobile')
+      this.slide = store.get('slide')
     },
     methods: {
       handleConfirm () {
+        var _this = this
         var reqData = {
           order_id: this.$route.query.order_id
         }
-        submitOrderConfirm(reqData).then(function(rep){
-          console.log(rep)
-        })
-        
+        submitOrderConfirm(reqData)
+          .then(function(rep){
+            console.log(rep)
+            MessageBox('提示', '操作成功')
+              .then( () => {
+                _this.$router.push({
+                  name: 'store',
+                  params: {
+                    id: store.get('store_id')
+                  }
+                })
+              })
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
       },
       handleDetail () {
-        this.$router.go(-1)
-      },
-      handleContact () {
-        
+        var _this = this
+        console.log(_this.$router)
+        _this.$router.push({
+          path: 'order/detail',
+          query: {
+            order_id: store.get('order_id'),
+            store_id: store.get('store_id')
+          }
+        })
+      }
+    },
+    computed: {
+      navUrl (){
+        return 'appcall://mapnav?endname="test"&endlng=106.553029&endlat=29.567469'
       }
     }
   }

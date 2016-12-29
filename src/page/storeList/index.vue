@@ -1,22 +1,22 @@
 <template>
   <div class="location">
     <div id="allmap"></div>
-    <router-link to="refund"><div class="icon-order"></div></router-link>
+    <router-link to="orderList"><div class="icon-order"></div></router-link>
     <app-title title="驾图购"> </app-title>
   </div>
 </template>
 
 <script>
-  import {getShopList} from '../../libs/api.js'
+  import { getShopList, getCarPosition } from '../../libs/api.js'
 
   export default {
     data(){
       return {
         shops:[
-          {'location':[106.544589,29.583938],'type': 'drink'},
-          {'location':[106.537187,29.587456],'type': 'food'},
-          {'location':[106.540923,29.576274],'type': 'shop'},
-          {'location':[106.541183,29.578274],'type': 'siga'}
+          {'location':[106.544589,29.583938],'type': 'drink', 'store_id': 1},
+          {'location':[106.537187,29.587456],'type': 'food', 'store_id': 2},
+          {'location':[106.540923,29.576274],'type': 'shop','store_id': 3},
+          {'location':[106.541183,29.578274],'type': 'siga','store_id': 4}
         ]
       }
     
@@ -29,8 +29,17 @@
           console.log(rep.data.data)
           //console.log(that.shops)
         })
+      getCarPosition('f157nnn235ff69c4d6f8ed5c475497b472cHHHHH')
+        .then(function(rep){
+          store.set('position',rep.data.data)
+          console.log(store.get('position'))
+        })
+        .catch(function(error){
+          console.log(error)
+        })
     },
     mounted(){
+      var _this = this
       var map = new BMap.Map("allmap");
       var point = new BMap.Point(106.539594,29.579195);
       map.centerAndZoom(point, 15);
@@ -62,9 +71,15 @@
           icon = iconShop
         }
         var point = new BMap.Point(this.shops[i].location[0],this.shops[i].location[1])
-        var mark = new BMap.Marker( point, {icon: icon});
-        map.addOverlay(mark);
+        var mark = new BMap.Marker( point, {icon: icon})
+        map.addOverlay(mark)
+        mark.href = this.shops[i].store_id 
+        mark.addEventListener("click",function(){
+          console.log(_this.$router)
+          _this.$router.push( { name: 'store', params: { id: this.href } } )
+        }, false)  
       }
+      
     }
   }
 </script>

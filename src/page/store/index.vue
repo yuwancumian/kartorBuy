@@ -35,7 +35,7 @@
     <app-footer 
       title="去结算" 
       :total_price="total_price"
-      url="/inputInfo">
+      :url="url">
     </app-footer>
     <modal v-if="modal_display"> 
       <div class="rate-grade">
@@ -56,7 +56,7 @@
           </li>
           <li>
             <span class="icon-full"></span>
-            满20送养乐多（小）一瓶
+            满10送养乐多（小）一瓶
           </li>
         </ul>
       </div>
@@ -69,8 +69,8 @@
   import Item from './item.vue'
   import Modal from '../../components/modal'
   import Star from './star.vue'
-  import {MessageBox} from 'mint-ui'
-  import { getStoreInfo, getGoodsList, getStoreNotice } from '../../libs/api.js'
+  import { MessageBox, Indicator } from 'mint-ui'
+  import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder } from '../../libs/api.js'
   export default {
     data () {
       return {
@@ -97,14 +97,15 @@
           }
         ],
         modal_display: false,
-        good_list:[]
+        goods_list:[]
       }
     },
     components: {
       Item,
       AppFooter,
       Modal,
-      Star
+      Star,
+      MessageBox
     },
     methods:{
       addTotalPrice(itemPrice){
@@ -118,16 +119,22 @@
       openModal(){
         this.modal_display = true
         console.log(111)
-      },
-      handeleSubmit(){
-        store.set("good_list",this.good_list)
-        this.$router.push('/inputInfo')
+      }
+      
+    },
+    computed: {
+      url () {
+        if ( store.get('contact_name') && store.get('contact_mobile') ) {
+          return '/pay'
+        } else {
+          return '/inputInfo'
+        }
       }
     },
     created(){
       var _this = this
       var id = _this.$route.params.id
-      this.good_list = []
+      this.goods_list = []
       getStoreInfo(id).then(function(rep){
         _this.store_name = rep.data.data.store_name
         _this.onsale_start = rep.data.data.onsale_start
@@ -145,11 +152,37 @@
     },
     beforeRouteLeave ( to, from, next ) {
       if ( to.path === "/inputInfo" ) {
-        store.set("good_list", this.good_list)
+        store.set("goods_list", this.goods_list)
         store.set("store_id", this.$route.params.id)
+        next()
       } 
-      console.log(this.good_list)
-      next()
+      else if ( to.path === "/pay" ) {
+        if ( this.goods_list.length == 0 ) {
+          MessageBox('提示', '请选择商品')
+        } else {
+          var reqData = {
+            store_id: store.get("store_id"),
+            license_plate: "ysd20009",
+            contact_name: this.contact_name,
+            contact_mobile: this.contact_mobile,
+            goods_list: this.goods_list
+          }
+
+          console.log(this.goods_list)
+          Indicator.open()
+          submitOrder(reqData).then(function(rep){
+            console.log(rep) 
+            Indicator.close()
+            next()
+          })
+          .catch(function(error){
+            console.log(error)
+          })
+        }
+      } else {
+        next()
+      }
+
     }
   }
 </script>

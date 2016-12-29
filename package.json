@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "sync": "rsync -avC src  --exclude-from src/libs/api.js --exclude-from src/page/home/index.vue ../front"
   },
   "dependencies": {
     "axios": "^0.15.3",

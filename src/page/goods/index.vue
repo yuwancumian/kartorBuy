@@ -42,7 +42,7 @@
     <!-- <mt-cell title="saf" value="111"> </mt-cell> -->
     <app-footer 
       title="去结算" 
-      url="/inputInfo" 
+      :url="url" 
       :total_price="total_price">
     </app-footer>
 	</div>
@@ -50,11 +50,11 @@
 
 <script>
 import {Cell} from 'mint-ui'
-import { Progress } from 'mint-ui'
+import { Progress, MessageBox, Indicator } from 'mint-ui'
 import Counter from '../../components/counter'
 import AppHeader from '../../components/header'
 import AppFooter from '../../components/footer'
-import {getGoodsInfo} from '../../libs/api.js'
+import { getGoodsInfo, submitOrder } from '../../libs/api.js'
 
 export default {
   components: {
@@ -76,7 +76,8 @@ export default {
         picture: ''
       },
       total_price: 0.00,
-      good_num: 0
+      goods_num: 0,
+      goods_list: []
     }
   },
   computed: {
@@ -85,38 +86,92 @@ export default {
     },
     percent: function(){
       return Math.floor(100*this.goods_info.like_count/this.total)
+    },
+    url () {
+      if ( store.get('contact_name') && store.get('contact_mobile') ) {
+        return '/pay'
+      } else {
+        return '/inputInfo'
+      }
     }
   },
   methods: {
     addP: function(counter){
       this.total_price = counter * this.goods_info.price
       console.log(this.total_price)
-      this.goods_info.good_num = counter
+      this.goods_num = counter
+      console.log(this.goods_num)
+      if ( this.goods_num === 1 ) {
+        this.goods_list.push({
+          goods_id: this.goods_info.id,
+          goods_num: this.goods_num
+        })
+      } 
+      if ( this.goods_num > 1 ) {
+        this.goods_list[0].goods_num = this.goods_num
+      }
+      console.log(this.goods_list)
     },
     minusP: function(counter){
       this.total_price = counter * this.goods_info.price
-      console.log(counter)
+      this.goods_num = counter
+
+      if (this.goods_num === 0) {
+        this.goods_list = []
+      } else {
+        this.goods_list[0].goods_num = this.goods_num
+      }
+      console.log(this.goods_list)
     }
   },
   created(){
     var _this = this
+    _this.goods_list = []
     console.log()
     getGoodsInfo(this.$route.params.id)
       .then(function(rep){
         console.log(rep.data)
         _this.goods_info = rep.data.data
       })
+      .catch(function (error) {
+        console.log(error);
+      })
   },
   beforeRouteLeave (to, from, next) {
     if ( to.path === "/inputInfo") {
-      store.set("good_list",[{
-        "good_id": this.goods_info.id,
-        "good_num": this.goods_info.good_num
+      store.set("goods_list",[{
+        "goods_id": this.goods_info.id,
+        "goods_num": this.goods_info.goods_num
       }])
       store.set("store_id",this.goods_info.store_id)
-      console.log(store.get("good_list"))
+      console.log(store.get("goods_list"))
+      next()
+    } else if (to.path === "/pay") {
+      if ( this.goods_list.length == 0 ) {
+        MessageBox('提示', '请选择商品')
+      } else {
+        var reqData = {
+          store_id: store.get("store_id"),
+          license_plate: "ysd20009",
+          contact_name: this.contact_name,
+          contact_mobile: this.contact_mobile,
+          goods_list: this.goods_list
+        }
+
+        console.log(this.goods_list)
+        Indicator.open()
+        submitOrder(reqData).then(function(rep){
+          console.log(rep) 
+          Indicator.close()
+          next()
+        })
+        .catch(function(error){
+          console.log(error)
+        })
+      }
+    } else {
+      next()
     }
-    next()
   }
 }
 </script>

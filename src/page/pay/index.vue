@@ -39,7 +39,7 @@
       </div>
     </div>
     
-    <app-footer title="确定支付" :total_price="total_price"></app-footer>
+    <app-footer title="确定支付" :total_price="total_price" url="/"></app-footer>
   </div>
 </template>
 

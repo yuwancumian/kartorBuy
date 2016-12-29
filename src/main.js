@@ -38,6 +38,7 @@ var routes = [
   },
   {
     path: '/store/:id',
+    name: 'store',
     component: Store
   },
   {

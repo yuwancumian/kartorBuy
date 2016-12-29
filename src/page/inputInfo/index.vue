@@ -6,7 +6,7 @@
       
     </div>
     <div class="container">
-      <a class="btn btn-primary" @click.prev.stop="handleClick" >
+      <a class="btn btn-primary" @click="handleClick" >
         下一步
       </a>
     </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-  import { MessageBox, Field } from 'mint-ui'
+  import { MessageBox, Field, Indicator } from 'mint-ui'
   import { submitOrder } from '../../libs/api.js'
   //import axios from 'axios'
   export default {
@@ -30,6 +30,7 @@
     },
     methods: {
       handleClick () {
+        var _this = this
         if (this.contact_name!==''&&this.contact_mobile!==""){
           store.set('contact_name',this.contact_name)
           store.set('contact_mobile',this.contact_mobile)
@@ -38,12 +39,13 @@
             license_plate: "ysd20009",
             contact_name: this.contact_name,
             contact_mobile: this.contact_mobile,
-            good_list: store.get("good_list"),
-            remark: "I am a mock remark"
+            goods_list: store.get("goods_list")
           }
+          Indicator.open()
           console.log(reqData)
           axios.post('http://172.20.12.138:8085/client/order/submit',reqData).then(function(rep){
-            console.log(rep)
+            Indicator.close()
+            _this.$router.push('/pay')
           })
         } else {
           console.log('请输入表单')

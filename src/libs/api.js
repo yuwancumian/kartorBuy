@@ -6,74 +6,90 @@ const defaults = {
 
 Object.assign(axios.defaults, defaults)
 
-//3.商店列表
+//获取用户信息
+export const getUserInfo = () => {
+  return axios.post('./user/info')
+}
+
+//商店列表
 export const getShopList = () => {
   return axios.get('/store/list')
 }
 
-//4.商店详情
+//商店详情
 export const getStoreInfo = (id) => {
   return axios.get(`/store/info?store_id=${id}`)
 }
 
-//5.店铺公告，折扣信息
+//店铺公告，折扣信息
 export const getStoreNotice = (id) => {
   return axios.get(`/store/notice?store_id=${id}`)
 }
 
-//6.进入店铺，商品列表
+//进入店铺，商品列表
 export const getGoodsList = (id) => {
   return axios.get(`/goods/list?store_id=${id}`)
 }
-//7.商品详情
+//商品详情
 export const getGoodsInfo = (id) => {
   return axios.get(`/goods/info?goods_id=${id}`)
 }
 
-//8.提交订单
+//提交订单
 export const submitOrder = (data) => {
   return axios.post('/order/submit',data)
 }
 
-//9.订单列表
+//订单列表
 export const getOrderList = (data) => {
   return axios.post('/order/list', data)
 }
 
-//10.订单状态
+//订单状态
 export const getOrderStatus = (id) => {
   return axios.get(`/order/status?order_id=${id}`)
 }
 
-//11.订单详情
+//订单详情
 export const getOrderDetail = (id) => {
   return axios.get(`/order/detail?order_id=${id}`)
 }
 
-//12.取消订单
+//取消订单
 export const submitOrderCancel = (data) => {
   return axios.post('/order/cancel',data)
 }
 
-//13.确认收货
+//确认收货
 export const submitOrderConfirm = (data) => {
-  return axios.post('/order/receipt',data).then(function(data){
-    return data
-  })
+  return axios.post('/order/receipt',data)
 }
 
-//14.退款申请
+//退款申请
 export const refundApply = (data) => {
-  return axios.post('/refund/apply',data)
+  return axios.post('/refund/apply', data)
 }
 
-//15.评价商品
-export const submitStoreGrade = () => {
-  return axios.get('/store/grade')
+//评价商品
+export const submitStoreGrade = (data) => {
+  return axios.post('/store/grade', data )
 }
 
-//16.点踩、点赞
-export const submitGoodsLike = () => {
-  return axios.post('/goods/like')
+//点赞
+export const submitGoodsLike = ( data ) => {
+  return axios.post('/goods/like', data)
 }
 
+// 点踩
+export const submitGoodsUnlike = ( data ) => {
+  return axios.post('/goods/unlike', data)
+}
+
+//行车位置
+export const getCarPosition = (car_id) => {
+  return axios.get('/car/position', {
+    params: {
+      open_car_id: car_id
+    }
+  }) 
+}
