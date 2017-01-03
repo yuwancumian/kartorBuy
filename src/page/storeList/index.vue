@@ -13,26 +13,60 @@
     data(){
       return {
         shops:[
-          {'location':[106.544589,29.583938],'type': 'drink', 'store_id': 1},
-          {'location':[106.537187,29.587456],'type': 'food', 'store_id': 2},
-          {'location':[106.540923,29.576274],'type': 'shop','store_id': 3},
-          {'location':[106.541183,29.578274],'type': 'siga','store_id': 4}
         ]
       }
     
     },
     created(){
-      var that = this
+      var _this = this
        getShopList()
         .then(function(rep){
-          //that.shops = data
-          console.log(rep.data.data)
-          //console.log(that.shops)
+          _this.shops = rep.data.data
+          console.log(_this.shops)
+          var map = new BMap.Map("allmap");
+          var point = new BMap.Point(106.539594,29.579195);
+          map.centerAndZoom(point, 13);
+          map.disableDoubleClickZoom(true);
+          var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink.png',new BMap.Size(37,71),{//是引用图标的名字以及大小，注意大小要一样
+            anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
+          })
+          var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food.png', new BMap.Size(48,56),{
+            anchor: new BMap.Size(10, 30) 
+          })
+          var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga.png', new BMap.Size(35,59),{
+            anchor: new BMap.Size(10, 30) 
+          })
+          var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop.png', new BMap.Size(57,47),{
+            anchor: new BMap.Size(10, 30) 
+          })
+          for( var i = 0; i < _this.shops.length; i ++){
+            var icon; 
+            if  (_this.shops[i].store_type == 1 ){
+              icon = iconDrink;
+            } 
+            if (_this.shops[i].store_type == 2){
+              icon = iconFood;
+            }
+            if (_this.shops[i].store_type == 4){
+              icon = iconSiga
+            }
+            if (_this.shops[i].store_type == 3){
+              icon = iconShop
+            }
+            var point = new BMap.Point(_this.shops[i].longitude,_this.shops[i].latitude)
+            var mark = new BMap.Marker( point, {icon: icon})
+            map.addOverlay(mark)
+            mark.href = _this.shops[i].store_id 
+            mark.addEventListener("click",function(){
+              console.log(_this.$router)
+              _this.$router.push( { name: 'store', params: { id: this.href } } )
+            }, false)  
+          }
         })
       getCarPosition('f157nnn235ff69c4d6f8ed5c475497b472cHHHHH')
         .then(function(rep){
           store.set('position',rep.data.data)
-          console.log(store.get('position'))
+          //console.log(store.get('position'))
         })
         .catch(function(error){
           console.log(error)
@@ -40,45 +74,8 @@
     },
     mounted(){
       var _this = this
-      var map = new BMap.Map("allmap");
-      var point = new BMap.Point(106.539594,29.579195);
-      map.centerAndZoom(point, 15);
-      map.disableDoubleClickZoom(true);
-      var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink.png',new BMap.Size(37,71),{//是引用图标的名字以及大小，注意大小要一样
-  anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
-});
-      var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food.png', new BMap.Size(48,56),{
-        anchor: new BMap.Size(10, 30) 
-      })
-      var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga.png', new BMap.Size(35,59),{
-        anchor: new BMap.Size(10, 30) 
-      })
-      var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop.png', new BMap.Size(57,47),{
-  anchor: new BMap.Size(10, 30) 
-})
-      for( var i = 0; i < this.shops.length; i ++){
-        var icon; 
-        if  (this.shops[i].type === 'drink' ){
-          icon = iconDrink;
-        } 
-        if (this.shops[i].type === 'food'){
-          icon = iconFood;
-        }
-        if (this.shops[i].type === 'siga'){
-          icon = iconSiga
-        }
-        if (this.shops[i].type === 'shop'){
-          icon = iconShop
-        }
-        var point = new BMap.Point(this.shops[i].location[0],this.shops[i].location[1])
-        var mark = new BMap.Marker( point, {icon: icon})
-        map.addOverlay(mark)
-        mark.href = this.shops[i].store_id 
-        mark.addEventListener("click",function(){
-          console.log(_this.$router)
-          _this.$router.push( { name: 'store', params: { id: this.href } } )
-        }, false)  
-      }
+      console.log(_this.shops)
+      
       
     }
   }

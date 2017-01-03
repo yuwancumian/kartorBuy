@@ -2,6 +2,15 @@
 .shop{
 	background: #fff;
 	min-height: 100vh;
+	padding-bottom: 48px;
+	.row{
+		position: relative;
+	}
+	.icon-add-gray{
+		position: absolute;
+		bottom: 10px;
+		right: 22px;
+	}
 }
 
 .shop-header{
@@ -9,14 +18,19 @@
   height: 112px;
   padding: 10px 0;
   color: #fff;
+	background: #35A1AE;
 	.title{
     padding: 6px 0;
     font-size: 16px;
-    border-bottom: 1px dashed #71ca52;
+    border-bottom: 1px dashed #5eb1bf;
 		
 		.col-12{
 			line-height: 24px;
 			padding-left: 6px;
+			width: 150px;
+			overflow: hidden; 
+			text-overflow: ellipsis ;
+			white-space:nowrap;
 		}
     img{
       width: 45px;
@@ -40,8 +54,18 @@
   }
 }
 
-.theme1{
-  background: #5db436;
+.closed{
+	.shop-header{
+		background: #5db436;
+		.title{
+			border-bottom: 1px dashed #71ca52;
+		}
+	}
+	.submit-btn{
+		background: #e5e5e5;
+		font-size: 16px;
+		line-height: 42px;
+	}
 }
 
 
@@ -96,8 +120,9 @@
     }
     :nth-child(3){
       font-size: 16px;
-      color: $c_red;
+      color: #f43530;
     }
+		
   }
 }
 

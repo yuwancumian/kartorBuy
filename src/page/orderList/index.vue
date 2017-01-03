@@ -66,7 +66,7 @@
     created(){
       var _this = this
       var reqData = {
-        user_id: 1,
+        user_id: store.get('user_id'),
         status: 0
       }
       getOrderList(reqData).then(function(rep){

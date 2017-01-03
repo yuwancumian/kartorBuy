@@ -1,14 +1,23 @@
 <template>
-  <router-view>
+  <transition :name="transitionName">
+  <router-view></router-view>
+ </transition> 
 </template>
 
 <script>
 export default {
-  mounted(){
-    localStorage.setItem("user_id", 1)
-    localStorage.setItem("order_id", 1)
-    localStorage.setItem("store_id", 1)
+  data() {
+    return{
+      transitionName: ''
+    }
+  },
+  watch: {
+  '$route' (to, from) {
+    const toDepth = to.path.split('/').length
+    const fromDepth = from.path.split('/').length
+    this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
   }
+}
 }
 </script>
 

@@ -8,12 +8,13 @@
         <img src="../../assets/images/slide-02.jpg" alt="">
       </mt-swipe-item>
       <mt-swipe-item>
-        <a href="http://172.20.12.138:8085/auth/location">
+        <router-link to="storeList">
           <img src="../../assets/images/slide-03.jpg" alt="">
-        </a>
+        </router-link>
       </mt-swipe-item>
     </mt-swipe>
-    <app-title title="I am a Homepage"> </app-title>
+    <div>{{user_id}}</div>
+    <app-title title="驾图购"> </app-title>
   </div>
 </template>
 
@@ -24,10 +25,22 @@
     components: {
       Swipe, SwipeItem
     },
+    data (){
+      return {
+        user_id: 2,
+      }
+    },
     created () {
-      
+      var _this = this
       getUserInfo().then(function(rep){
-        console.log(rep)
+        _this.user_id = rep.data.data.user_id
+        _this.license_plate = rep.data.data.license_plate
+        _this.contact_name = rep.data.data.real_name
+        _this.contact_mobile = rep.data.data.contact_mobile
+        store.set('user_id',_this.user_id)
+        store.set('license_plate',_this.license_plate)
+        store.set('contact_name', _this.contact_name)
+        store.set('contact_mobile', _this.contact_mobile)
       })
     },
     mounted(){

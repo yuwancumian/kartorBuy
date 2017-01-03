@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
-    "sync": "rsync -avC src  --exclude-from src/libs/api.js --exclude-from src/page/home/index.vue ../front"
+    "sync": "rsync -avC src  --exclude src/libs/api.js ../front"
   },
   "dependencies": {
     "axios": "^0.15.3",
@@ -18,6 +18,7 @@
     "qs": "^6.3.0",
     "vue": "^2.1.0",
     "vue-router": "^2.1.1",
+    "vue-router-transition": "^1.0.9",
     "zepto": "^1.2.0"
   },
   "devDependencies": {

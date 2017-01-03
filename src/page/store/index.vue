@@ -1,10 +1,10 @@
 <template>
-  <div class="shop">
-    <div class="shop-header theme1">
+  <div class="shop" :class="{closed: is_onsale==2}">
+    <div class="shop-header">
       <div class="container">
         <div class="row title">
           <div class="col-4">
-            <img src="../../assets/images/eg01.jpg" alt="">
+            <img :src="store_icon" alt="">
           </div>
           <div class="col-12">
             {{store_name}}
@@ -27,6 +27,7 @@
         v-for="(product, index) in products"
         v-bind:product = "product"
         v-bind:index = "index"
+        :is_onsale = "is_onsale"
         @addPrice = "addTotalPrice"
         @minusPrice = "minusTotalPrice"
       >
@@ -35,8 +36,11 @@
     <app-footer 
       title="去结算" 
       :total_price="total_price"
-      :url="url">
+      :url="url" v-if="is_onsale<2">
     </app-footer>
+    <div class="submit-btn" v-else>
+      商家休息中，暂不接单
+    </div>
     <modal v-if="modal_display"> 
       <div class="rate-grade">
         <h3>{{store_name}}</h3>
@@ -52,12 +56,12 @@
         <ul>
           <li>
             <span class="icon-discount"></span>
-            全场9.5折
+            全场 {{discount*10}} 折
           </li>
-          <li>
-            <span class="icon-full"></span>
-            满10送养乐多（小）一瓶
-          </li>
+          <!-- <li> -->
+          <!--   <span class="icon-full"></span> -->
+          <!--   满10送养乐多（小）一瓶 -->
+          <!-- </li> -->
         </ul>
       </div>
     </modal>
@@ -75,7 +79,7 @@
     data () {
       return {
         store_name: '7-11便利店',
-        shop_logo: '',
+        store_icon: '',
         total_price: 0,
         discount: 0.95,
         onsale_start: "8:00",
@@ -137,9 +141,11 @@
       this.goods_list = []
       getStoreInfo(id).then(function(rep){
         _this.store_name = rep.data.data.store_name
+        _this.store_icon = rep.data.data.store_icon
         _this.onsale_start = rep.data.data.onsale_start
         _this.onsale_end = rep.data.data.onsale_end
         _this.avg_rating = rep.data.data.avg_rating
+        _this.is_onsale = rep.data.data.is_onsale
       })
       getStoreNotice(id).then(function(rep){
         _this.discount = rep.data.data.discount
@@ -149,6 +155,7 @@
         console.log(rep.data.data)
         _this.products = rep.data.data        
       })
+      console.log(_this.is_onsale)
     },
     beforeRouteLeave ( to, from, next ) {
       if ( to.path === "/inputInfo" ) {
@@ -161,10 +168,11 @@
           MessageBox('提示', '请选择商品')
         } else {
           var reqData = {
-            store_id: store.get("store_id"),
-            license_plate: "ysd20009",
-            contact_name: this.contact_name,
-            contact_mobile: this.contact_mobile,
+            user_id: store.get("user_id"),
+            store_id: this.$route.params.id,
+            license_plate: store.get('license_plate'),
+            contact_name: store.get("contact_name"),
+            contact_mobile: store.get("contact_mobile"),
             goods_list: this.goods_list
           }
 

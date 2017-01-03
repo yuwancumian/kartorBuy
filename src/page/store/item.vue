@@ -12,11 +12,14 @@
         </li>
         <li>月销量 {{product.quantity}} 
             好评度 {{product.u_like*100}}%</li>
-        <li>{{product.price}}</li>
+        <li>¥{{product.price}}</li>
       </ul>
     </div>
-    <div class="col-8">
+    <div class="col-8" v-if="is_onsale==1">
     <counter v-on:addPrice="addItemPrice" v-on:minusPrice="minusItemPrice"></counter>
+    </div>
+    <div class="col-8" v-else>
+      <span class="icon-add-gray"></span>
     </div>
     
   </div>
@@ -25,7 +28,7 @@
 <script>
   import Counter from '../../components/counter'
   export default {
-    props: ['product', 'index'],
+    props: ['product', 'index', 'is_onsale'],
     components: {
       Counter
     },
@@ -87,7 +90,10 @@
         console.log(this.$parent.goods_list)
       }
     },
-    updated(){
+    filters: {
+      getIndex(value){
+        return value.split(',')
+      }
     }
   }
 </script>

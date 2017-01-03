@@ -32,21 +32,27 @@
       handleClick () {
         var _this = this
         if (this.contact_name!==''&&this.contact_mobile!==""){
-          store.set('contact_name',this.contact_name)
-          store.set('contact_mobile',this.contact_mobile)
+          store.set('contact_name',_this.contact_name)
+          store.set('contact_mobile',_this.contact_mobile)
           var reqData = {
+            user_id: store.get("user_id"),
             store_id: store.get("store_id"),
-            license_plate: "ysd20009",
-            contact_name: this.contact_name,
-            contact_mobile: this.contact_mobile,
+            license_plate: store.get('license_plate'),
+            contact_name: _this.contact_name,
+            contact_mobile: _this.contact_mobile,
             goods_list: store.get("goods_list")
           }
           Indicator.open()
-          console.log(reqData)
-          axios.post('http://172.20.12.138:8085/client/order/submit',reqData).then(function(rep){
+          alert(JSON.stringify(reqData))
+          submitOrder(reqData).then(function(rep){
             Indicator.close()
             _this.$router.push('/pay')
-          })
+            })
+            .catch(function(err){
+              Indicator.close()
+              alert(err) 
+            }
+          )
         } else {
           console.log('请输入表单')
         }
