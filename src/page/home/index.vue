@@ -13,7 +13,6 @@
         </router-link>
       </mt-swipe-item>
     </mt-swipe>
-    <div>{{user_id}}</div>
     <app-title title="驾图购"> </app-title>
   </div>
 </template>

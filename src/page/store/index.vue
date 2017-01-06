@@ -7,32 +7,51 @@
             <img :src="store_icon" alt="">
           </div>
           <div class="col-12">
-            {{store_name}}
-            <br>
-            <span class="onsale">
-              {{onsale_start}}  -  {{onsale_end}}
+            <!-- -->
+            <div class="store-name">{{store_name}} </div>
+            <span class="onsale" v-if="is_onsale == 1">
+              {{onsale_start}}  至  {{onsale_end}}
+            </span>
+            <span class="onsale" v-else>
+              歇业中
             </span>
           </div>
         </div>
         
         
-        <div class="discount" @click="openModal">
+        <div class="discount" @click="openModal" v-if="discount!=''">
           <span class="icon-discount" ></span>
           全场 {{discount*10}} 折
         </div>
       </div>
     </div>
-    <div class="shop-list">
-      <item 
-        v-for="(product, index) in products"
-        v-bind:product = "product"
-        v-bind:index = "index"
-        :is_onsale = "is_onsale"
-        @addPrice = "addTotalPrice"
-        @minusPrice = "minusTotalPrice"
-      >
-      </item>
+    <div class="shop-list" 
+      v-if="products.length > 0"
+      v-infinite-scroll="loadMore"
+      infinite-scroll-disabled="loading"
+      infinite-scroll-immediate-check="false"
+      infinite-scroll-distance="10">
+        <item 
+          v-for="(product, index) in products"
+          v-bind:product = "product"
+          v-bind:index = "index"
+          :is_onsale = "is_onsale"
+          @addPrice = "addTotalPrice"
+          @minusPrice = "minusTotalPrice">
+        </item>
+        <!-- <p v-show="loading" class="page-infinite-loading"> -->
+        <!--   <mt-spinner type="fading-circle"></mt-spinner> -->
+        <!--   <br> -->
+        <!--   加载中... -->
+        <!-- </p> --> 
+      
     </div>
+    <div class="no-goods" v-else>
+        <img src="../../assets/images/icon-empty.png" alt="">
+        <br>
+        <br>
+        亲，商家暂无商品出售!
+      </div>
     <app-footer 
       title="去结算" 
       :total_price="total_price"
@@ -65,6 +84,7 @@
         </ul>
       </div>
     </modal>
+    <app-title title="驾图购"> </app-title>
   </div>
 </template>
 
@@ -73,35 +93,33 @@
   import Item from './item.vue'
   import Modal from '../../components/modal'
   import Star from './star.vue'
-  import { MessageBox, Indicator } from 'mint-ui'
+  import { MessageBox, Indicator, InfiniteScroll, Spinner } from 'mint-ui'
   import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder } from '../../libs/api.js'
   export default {
     data () {
       return {
-        store_name: '7-11便利店',
+        store_name: '',
         store_icon: '',
         total_price: 0,
-        discount: 0.95,
+        discount: '',
         onsale_start: "8:00",
         onsale_end: "19:30",
         is_onsale: 1,
         avg_rating: 3,
+        loading: false,
+        page: 1,
         products:[
           {
+            thumbnail: '',
             product_title: '香菇粉丝素菜包',
             product_price: '12.20',
             percent: '90%',
             sale: 32
-          },
-          {
-            product_title: '王老吉wanglaoji',
-            product_price: '21.10',
-            percent: '22%',
-            sale: 12
           }
         ],
         modal_display: false,
-        goods_list:[]
+        goods_list:[],
+        order_id: '',
       }
     },
     components: {
@@ -109,7 +127,8 @@
       AppFooter,
       Modal,
       Star,
-      MessageBox
+      MessageBox,
+      InfiniteScroll
     },
     methods:{
       addTotalPrice(itemPrice){
@@ -122,7 +141,25 @@
       },
       openModal(){
         this.modal_display = true
-        console.log(111)
+      },
+      loadMore(){
+        var _this = this
+        Indicator.open({
+          spinnerType: 'fading-circle'
+        })
+        _this.loading = true
+        var id = _this.$route.params.id
+        setTimeout(() => {
+          console.log('add more!')
+          _this.page += 1
+          console.log(_this.page)
+          getGoodsList(id,_this.page).then(function(rep){
+            var newList = rep.data.data
+            _this.products.push(...newList)        
+          })
+          this.loading = false
+          Indicator.close()
+        },1600);
       }
       
     },
@@ -138,6 +175,7 @@
     created(){
       var _this = this
       var id = _this.$route.params.id
+      var page = _this.page
       this.goods_list = []
       getStoreInfo(id).then(function(rep){
         _this.store_name = rep.data.data.store_name
@@ -146,26 +184,33 @@
         _this.onsale_end = rep.data.data.onsale_end
         _this.avg_rating = rep.data.data.avg_rating
         _this.is_onsale = rep.data.data.is_onsale
+        console.log('created' +_this.store_name)
       })
       getStoreNotice(id).then(function(rep){
-        _this.discount = rep.data.data.discount
-        console.log(rep.data.data.discount)
+        if (rep.data.data.discount !== undefined ) {
+          _this.discount = rep.data.data.discount
+        }
       })
-      getGoodsList(id).then(function(rep){
-        console.log(rep.data.data)
+      getGoodsList(id,page).then(function(rep){
         _this.products = rep.data.data        
       })
       console.log(_this.is_onsale)
     },
+    
     beforeRouteLeave ( to, from, next ) {
+      var _this = this
       if ( to.path === "/inputInfo" ) {
-        store.set("goods_list", this.goods_list)
-        store.set("store_id", this.$route.params.id)
-        next()
+        if (this.goods_list.length == 0 ) {
+          MessageBox('提示', '请添加商品')
+        } else {
+          store.set("goods_list", this.goods_list)
+          store.set("store_id", this.$route.params.id)
+          next()
+        }
       } 
       else if ( to.path === "/pay" ) {
         if ( this.goods_list.length == 0 ) {
-          MessageBox('提示', '请选择商品')
+          MessageBox('提示', '请添加商品')
         } else {
           var reqData = {
             user_id: store.get("user_id"),
@@ -181,6 +226,8 @@
           submitOrder(reqData).then(function(rep){
             console.log(rep) 
             Indicator.close()
+            _this.order_id = rep.data.data.order_id
+            store.set('order_id', _this.order_id)
             next()
           })
           .catch(function(error){

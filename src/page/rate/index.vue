@@ -1,8 +1,8 @@
 <template>
   <div class="rate">
     <div class="rate-title">
-      <img src="../../assets/images/eg01.jpg" alt="">
-      罗森便利店
+      <img :src="store_icon" alt="">
+       {{store_name}}
     </div>
     <div class="rate-grade">
       <h3>商家服务评价</h3>
@@ -12,7 +12,7 @@
       <h3>请选择您想推荐或吐槽的商品</h3>
       <ul>
         <li v-for = "goods in goods_list">
-            {{goods.goods_name}}
+          <span>{{goods.goods_name}}</span>
             <up-down 
               @handleUp = "submitRateUp(goods.goods_id)" 
               @handleDown ="submitRateDown(goods.goods_id)"> 
@@ -34,13 +34,16 @@
 <script>
   import Rater from '../../components/rater'
   import UpDown from './updown.vue'
-  import { getOrderDetail, submitStoreGrade, submitGoodsLike, submitGoodsUnlike } from '../../libs/api.js'
+  import { getOrderDetail, getStoreInfo, submitStoreGrade, submitGoodsLike, submitGoodsUnlike } from '../../libs/api.js'
+  import { MessageBox } from 'mint-ui'
   export default {
     components: {
       Rater, UpDown
     },
     data () {
       return {
+        store_icon:'',
+        store_name:'',
         goods_list: [],
         comment: ''
       }
@@ -51,6 +54,10 @@
         _this.goods_list = rep.data.data.goods 
         console.log(rep.data.data.goods)
       }) 
+      getStoreInfo(_this.$route.query.store_id).then(function(rep){
+        _this.store_icon = rep.data.data.store_icon
+        _this.store_name = rep.data.data.store_name
+      })
     },
     methods:{
       submitRateUp ( id ) {
@@ -88,6 +95,9 @@
         }
         submitStoreGrade ( reqData ).then(function(rep){
           console.log(rep) 
+          MessageBox.confirm('评论成功！').then(() => {
+            _this.$router.push('orderList')
+          })
         }) 
       }
 

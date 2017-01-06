@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-4">
-      <img class="item-pic" :src="product.picture" alt="">
+      <img class="item-pic" :src="product.picture | getIndex" alt="">
     </div>
     <div class="col-12">
       <ul class="item-info">
@@ -10,8 +10,8 @@
             {{product.name}}
           </router-link>
         </li>
-        <li>月销量 {{product.quantity}} 
-            好评度 {{product.u_like*100}}%</li>
+        <li>月销量 {{product.quantity||0}} 
+          <span v-if="product.u_like!=null"> 好评度 {{product.u_like*100}}%</span></li>
         <li>¥{{product.price}}</li>
       </ul>
     </div>
@@ -21,7 +21,8 @@
     <div class="col-8" v-else>
       <span class="icon-add-gray"></span>
     </div>
-    
+    <div class="icon-return" v-if="product.is_refundable == 2">
+    </div> 
   </div>
 </template>
 
@@ -92,7 +93,11 @@
     },
     filters: {
       getIndex(value){
-        return value.split(',')
+        if(value) {
+          return value.split(',')[0]
+        } else {
+          return ''
+        }
       }
     }
   }

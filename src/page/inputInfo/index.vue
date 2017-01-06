@@ -25,7 +25,8 @@
     data(){
       return {
         contact_name: '',
-        contact_mobile: '' 
+        contact_mobile: '',
+        order_id: ''
       }
     },
     methods: {
@@ -43,18 +44,23 @@
             goods_list: store.get("goods_list")
           }
           Indicator.open()
-          alert(JSON.stringify(reqData))
           submitOrder(reqData).then(function(rep){
             Indicator.close()
             _this.$router.push('/pay')
+            _this.order_id =rep.data.data.order_id
+            store.set('order_id', _this.order_id)
             })
             .catch(function(err){
               Indicator.close()
-              alert(err) 
+              console.log(err) 
             }
           )
         } else {
-          console.log('请输入表单')
+          if ( _this.contact_name ==='') {
+            MessageBox('提示', '请输入您的称呼')
+          } else {
+            MessageBox('提示', '请输入您的手机号')
+          }
         }
       }
     }  

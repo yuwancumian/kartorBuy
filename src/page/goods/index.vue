@@ -14,6 +14,7 @@
           <li>{{goods_info.price}}</li>
         </ul>
         <counter v-on:addPrice="addP" v-on:minusPrice="minusP" > </counter>
+        <div class="icon-return" v-if="goods_info.is_refundable == 2"></div>
       </div>
     </div>
     <div class="single-panel">
@@ -77,7 +78,8 @@ export default {
       },
       total_price: 0.00,
       goods_num: 0,
-      goods_list: []
+      goods_list: [],
+      order_id: ''
     }
   },
   computed: {
@@ -138,17 +140,22 @@ export default {
       })
   },
   beforeRouteLeave (to, from, next) {
+    var _this = this
     if ( to.path === "/inputInfo") {
-      store.set("goods_list",[{
-        "goods_id": this.goods_info.id,
-        "goods_num": this.goods_info.goods_num
-      }])
+      if ( this.goods_list.length == 0 ) {
+        MessageBox('提示', '请添加商品')
+      } else {
+        store.set("goods_list",[{
+          "goods_id": this.goods_info.id,
+          "goods_num": this.goods_info.goods_num
+        }])
+      }
       store.set("store_id",this.goods_info.store_id)
       console.log(store.get("goods_list"))
       next()
     } else if (to.path === "/pay") {
       if ( this.goods_list.length == 0 ) {
-        MessageBox('提示', '请选择商品')
+        MessageBox('提示', '请添加商品')
       } else {
         var reqData = {
           store_id: store.get("store_id"),
@@ -163,6 +170,8 @@ export default {
         submitOrder(reqData).then(function(rep){
           console.log(rep) 
           Indicator.close()
+          _this.order_id = rep.data.data.order_id
+          store.set('order_id', _this.order_id)
           next()
         })
         .catch(function(error){
@@ -181,6 +190,14 @@ export default {
 .goods-info{
   background: #fff;
   min-height: 100vh;
+  .container{
+    .icon-return{
+      width: 52px;
+      position: absolute;
+      top: 12px;
+      right: 10px;
+    }
+  }
 	header{
 		img{
 			width: 100%;

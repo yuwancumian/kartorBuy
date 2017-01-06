@@ -27,8 +27,8 @@ export const getStoreNotice = (id) => {
 }
 
 //进入店铺，商品列表
-export const getGoodsList = (id) => {
-  return axios.get(`/goods/list?store_id=${id}`)
+export const getGoodsList = (id,page) => {
+  return axios.get(`/goods/list?store_id=${id}&page=${page}&size=10`)
 }
 //商品详情
 export const getGoodsInfo = (id) => {

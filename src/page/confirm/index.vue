@@ -4,10 +4,13 @@
       预计您15分钟可到达取货店
     </div>
     <div class="confirm-title">
-      <div><img src="../../assets/images/eg01.jpg" alt=""> 罗森便利店 </div>
+      <div>
+        <img :src="detail.store_icon" alt=""> 
+        <span>{{ detail.store_name }} </span>
+      </div>
       <p>
-         <span>已备货</span>
-         <a :href="navUrl"> <i class="icon-nav"></i>导航</a>
+        <span>{{ detail.status | statusToText }}</span>
+        <a :href="navUrl"> <i class="icon-nav"></i>导航</a>
       </p>
 
     </div>
@@ -33,7 +36,7 @@
         <a class="btn btn-default" @click="handleDetail">
             <span class="icon-cont"></span>订单详情
         </a>
-        <a class="btn btn-default"  :href="'tel:'+telephone">
+        <a class="btn btn-default"  :href="'tel:' + contact_phone">
            <span class="icon-tele"></span>联系商家
         </a>
       </div>
@@ -44,6 +47,7 @@
 <script>
   import AppFooter from '../../components/footer'
   import { Swipe, SwipeItem, MessageBox } from 'mint-ui'
+  import { getOrderDetail, getStoreInfo } from '../../libs/api.js'
   import { submitOrderConfirm } from '../../libs/api.js'
 
   export default {
@@ -52,13 +56,23 @@
     },
     data (){
       return {
-        telephone: 0,
-        slide: []
+        contact_phone: 0,
+        slide: [],
+        detail: {}
       }
     },
     created () {
-      this.telephone = store.get('contact_mobile')
-      this.slide = store.get('slide')
+      var _this = this
+      _this.slide = store.get('slide')
+      var order_id = _this.$route.query.order_id
+      var store_id = _this.$route.query.store_id
+      getOrderDetail(order_id).then(function(rep){
+        _this.detail = rep.data.data
+      })
+      getStoreInfo(store_id).then(function(rep){
+        _this.contact_phone = rep.data.data.contact_phone
+      })
+  
     },
     methods: {
       handleConfirm () {
@@ -98,6 +112,36 @@
     computed: {
       navUrl (){
         return 'appcall://mapnav?endname="test"&endlng=106.553029&endlat=29.567469'
+      }
+    },
+    filters: {
+      statusToText (value) {
+        switch (value) {
+          case 1:
+            return '待支付'
+          case 2:
+            return '支付成功'
+          case 3:
+            return '商家已接单'
+          case 4:
+            return '已备货'
+          case 5:
+            return '商家到达取货点'
+          case 6:
+            return '确认收货'
+          case 7:
+            return '订单已取消'
+          case 8:
+            return '申请退货'
+          case 9: 
+            return '退货中'
+          case 10:
+            return '同意退货'
+          case 11:
+            return '拒绝退货'
+          case 12:
+            return '退货成功'
+        }
       }
     }
   }

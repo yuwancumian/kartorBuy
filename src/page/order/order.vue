@@ -9,9 +9,9 @@
   <div class="ot-step-container" style="background: #fff;">
     
     <ot-step v-for="step in opt" :title="step.description" :label="step.create_time"></ot-step>
-    <ot-step title="已完成" label="8月22日 20:51"  done desc="这里是信息的描述 ">
-      <span class="icon-done"></span>
-    </ot-step>
+    <!-- <ot-step title="已完成" label="8月22日 20:51"  done desc="这里是信息的描述 "> -->
+    <!--   <span class="icon-done"></span> -->
+    <!-- </ot-step> -->
   </div>
     <div class="submit-btn">
       <p @click="handleRefund">退货</p>
@@ -33,7 +33,7 @@
         </mt-swipe-item>
       </mt-swipe>
     </div>
-    <panel title="罗森便利店">
+    <panel :title="detail.store_name">
       <table class="table table-price">
         <tr v-for="good in detail.goods">
           <td>{{good.goods_name}}</td>
@@ -41,8 +41,8 @@
           <td>{{good.price}}</td>
         </tr>
         <tr class="tfoot">
-          <td colspan="3">
-            共3件商品，实付
+          <td colspan="3" style="text-align: left">
+            共 {{detail.total_num}} 件商品，实付
               <span class="total-price">{{detail.total_price}}</span>
             元 
           </td>
@@ -57,8 +57,8 @@
     <list title="订单号" :text="detail.order_code">  </list>
       <list title="支付方式"> </list>
       <list title="车牌号" :text="detail.license_plate"></list>
-      <list title="联系人" :text="contact_name"></list>
-      <list title="联系电话" :text="contact_mobile"></list>
+      <list title="联系人" :text="detail.contact_name"></list>
+      <list title="联系电话" :text="detail.contact_mobile"></list>
     </panel>
   </mt-tab-container-item>
 </mt-tab-container>
@@ -87,7 +87,9 @@ export default {
         remark: '',
         create_time: '',
         order_code: '',
-        license_plate: ''
+        license_plate: '',
+        contact_mobile: '',
+        contact_name: '' 
       },
       opt: [
         {
@@ -106,8 +108,7 @@ export default {
           create_time: '2016-12-17 21:13:19'
         },
       ],
-      contact_mobile: '',
-      contact_name: '', 
+      
       slide: []
     }
   },
@@ -117,9 +118,11 @@ export default {
       console.log(rep.data.data)
       _this.detail = rep.data.data
       _this.slide = _this.detail.picture.split(',')
-      _this.contact_name = store.get('contact_name')
-      _this.contact_mobile = store.get('contact_mobile')
       store.set('slide', _this.slide)
+      console.log(_this.contact_name)
+    })
+    getOrderStatus(this.$route.query.order_id).then(function(rep){
+      _this.opt = rep.data.data.opts
     })
   },
   methods: {
@@ -137,7 +140,8 @@ export default {
         path: '/confirm', 
         query: { 
           //store_id: this.$route.query.store_id,
-          order_id: this.$route.query.order_id
+          order_id: this.$route.query.order_id,
+          store_id: this.$route.query.store_id
         }
       })
     }

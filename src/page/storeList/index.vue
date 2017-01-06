@@ -1,6 +1,11 @@
 <template>
   <div class="location">
     <div id="allmap"></div>
+    <router-link to="/">
+      <div class="tips">
+        了解驾图购
+      </div>
+    </router-link>
     <router-link to="orderList"><div class="icon-order"></div></router-link>
     <app-title title="驾图购"> </app-title>
   </div>
@@ -91,6 +96,12 @@
       position: absolute;
       bottom: 2rem;
       right: 2em;
+    }
+    .tips{
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
     }
   }
 </style>
