@@ -1,17 +1,16 @@
 <template>
 	<div class="goods-info">
 		<header>
-			<img :src="goods_info.picture" alt="">
+			<img :src="goods_info.picture.split(',')[0]" alt="">
 		</header>
     <div class="single-panel">
       <div class="container">
         <ul class="item-info">
           <li>{{goods_info.name}}</li>
-          <li>月销量{{goods_info.saled}}  
+          <li>  
             <span v-if="total>0"> 好评度 {{percent}}% </span>
-            <span v-else> 暂无评价</span>
           </li>
-          <li>{{goods_info.price}}</li>
+          <li>¥ {{goods_info.price}}</li>
         </ul>
         <counter v-on:addPrice="addP" v-on:minusPrice="minusP" > </counter>
         <div class="icon-return" v-if="goods_info.is_refundable == 2"></div>
@@ -105,7 +104,7 @@ export default {
       console.log(this.goods_num)
       if ( this.goods_num === 1 ) {
         this.goods_list.push({
-          goods_id: this.goods_info.id,
+          goods_id: parseInt(this.$route.params.id),
           goods_num: this.goods_num
         })
       } 
@@ -190,12 +189,18 @@ export default {
 .goods-info{
   background: #fff;
   min-height: 100vh;
+  padding-bottom: 48px;
   .container{
+    position: relative;
     .icon-return{
       width: 52px;
       position: absolute;
-      top: 12px;
+      top: 0px;
       right: 10px;
+    }
+    .counter{
+      top: auto;
+      bottom: 3px;
     }
   }
 	header{
@@ -229,6 +234,7 @@ export default {
     text-align: center;
     height: 100px;
     line-height: 100px;
+    color: #c9c9c9;
   }
   footer{
     position: fixed;
@@ -238,6 +244,7 @@ export default {
     margin: 0;
     padding-left: 10px;
     line-height: 20px;
+    min-height: 60px;
     li:nth-of-type(1){
       font-size: 16px;
     }
@@ -247,7 +254,7 @@ export default {
     }
     :nth-child(3){
       font-size: 16px;
-      color: $c_red;
+      color: #f43530;
     }
   }
 }

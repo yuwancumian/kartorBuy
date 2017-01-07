@@ -2,7 +2,7 @@
   <div class="inputInfo">
     <div class="ot-panel">
       <mt-field label="称 呼" placeholder="请输入您的称呼" v-model="contact_name"></mt-field>
-      <mt-field label="手机号" placeholder="请输入手机号" type="tel" v-model="contact_mobile"></mt-field>
+      <mt-field label="手机号" placeholder="可及时联系到您的手机号" type="tel" v-model="contact_mobile"></mt-field>
       
     </div>
     <div class="container">

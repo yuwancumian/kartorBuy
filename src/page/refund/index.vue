@@ -100,10 +100,13 @@
           pic: this.picture.join(',')
         }
         refundApply(subData).then(function(rep){
-          MessageBox('提示', '操作成功');
-          console.log('222')
+          MessageBox({
+            title: '提示',
+            message: '您的退款申请已经提交成功，请耐心等待商家处理 <br> <div style="font-size: 14px;line-height: 20px"> 如有疑问，请致电驾图购客服 4008054288 </div>',
+            confirmButtonText: '返回订单中心'
+          })
           _this.$router.push({
-            path: '/order/detail', 
+            path: '/orderList', 
             query: { 
               order_id: _this.$route.query.order_id,
               store_id: _this.$route.query.store_id

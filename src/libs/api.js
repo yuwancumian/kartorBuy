@@ -28,7 +28,7 @@ export const getStoreNotice = (id) => {
 
 //进入店铺，商品列表
 export const getGoodsList = (id,page) => {
-  return axios.get(`/goods/list?store_id=${id}&page=${page}&size=10`)
+  return axios.get(encodeURI('/goods/list?store_id='+id+'&page=' + page + '&size=6'))
 }
 //商品详情
 export const getGoodsInfo = (id) => {
@@ -83,6 +83,11 @@ export const submitGoodsLike = ( data ) => {
 // 点踩
 export const submitGoodsUnlike = ( data ) => {
   return axios.post('/goods/unlike', data)
+}
+// 支付
+export const submitPay = (data) => {
+  alert('pay in')
+  return axios.post('/pay', data)
 }
 
 //行车位置

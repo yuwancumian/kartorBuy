@@ -25,6 +25,19 @@
         </div>
       </div>
     </div>
+    <div class="swipe">
+    <mt-swipe :auto="4000">
+      <mt-swipe-item>
+        <img :src="slide[0]" alt="">
+      </mt-swipe-item>
+      <mt-swipe-item>
+        <img :src="slide[1]" alt="">
+      </mt-swipe-item>
+      <mt-swipe-item>
+        <img :src="slide[2]" alt="">
+      </mt-swipe-item>
+    </mt-swipe>
+    </div>
     <div class="shop-list" 
       v-if="products.length > 0"
       v-infinite-scroll="loadMore"
@@ -93,7 +106,7 @@
   import Item from './item.vue'
   import Modal from '../../components/modal'
   import Star from './star.vue'
-  import { MessageBox, Indicator, InfiniteScroll, Spinner } from 'mint-ui'
+  import { MessageBox, Indicator, InfiniteScroll, Spinner, Swipe, SwipeItem } from 'mint-ui'
   import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder } from '../../libs/api.js'
   export default {
     data () {
@@ -105,9 +118,10 @@
         onsale_start: "8:00",
         onsale_end: "19:30",
         is_onsale: 1,
-        avg_rating: 3,
+        avg_rating: 0,
         loading: false,
         page: 1,
+        slide: [],
         products:[
           {
             thumbnail: '',
@@ -132,11 +146,11 @@
     },
     methods:{
       addTotalPrice(itemPrice){
-        this.total_price += parseFloat(itemPrice)
+        this.total_price += (parseFloat(itemPrice))*this.discount
         console.log((this.total_price).toFixed(2))
       },
       minusTotalPrice(itemPrice){
-        this.total_price -= parseFloat(itemPrice)
+        this.total_price -= (parseFloat(itemPrice))*this.discount
         console.log((this.total_price).toFixed(2))
       },
       openModal(){
@@ -154,8 +168,12 @@
           _this.page += 1
           console.log(_this.page)
           getGoodsList(id,_this.page).then(function(rep){
-            var newList = rep.data.data
-            _this.products.push(...newList)        
+            var newList = rep.data.data    
+            _this.products.push(...newList)  
+            if ( newList.length < 10 ) {
+              _this.loading = true
+              return false 
+            }      
           })
           this.loading = false
           Indicator.close()
@@ -184,6 +202,7 @@
         _this.onsale_end = rep.data.data.onsale_end
         _this.avg_rating = rep.data.data.avg_rating
         _this.is_onsale = rep.data.data.is_onsale
+        _this.slide = rep.data.data.picture.split(',')
         console.log('created' +_this.store_name)
       })
       getStoreNotice(id).then(function(rep){

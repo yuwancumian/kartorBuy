@@ -1,9 +1,9 @@
 <template>
   <div class="pay">
     <timer :left_time="left_time"></timer>
-    <div class="ot-panel" style="margin-top: -1px">
+    <!--<div class="ot-panel" style="margin-top: -1px">
       <pay-mode v-model="selected"></pay-mode>
-    </div>
+    </div>-->
     <div class="ot-panel">
       <h3>{{detail.store_name}}</h3>
       <div class="container">
@@ -16,8 +16,8 @@
         </table>
       </div>
       <div class="pay-info">
-        <span class="icon-discount"></span>全场 <span class="prom">9</span> 折   
-        <div> -¥<span class="cut">{{detail.discount_amount}}</span></div>
+        <span class="icon-discount"></span>全场 <span class="prom">{{detail.discount*10}}</span> 折   
+        <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
       </div>
       <div class="pay-info">
         订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span> 
@@ -30,7 +30,7 @@
       <div class="title">
         备注：
       </div>
-      <input type="text" placeholder="在此输入备注" />
+      <input type="text" placeholder="口味、偏好等" />
     </div>
     <div class="ot-panel">
       <div class="container">
@@ -40,7 +40,10 @@
     </div>
     
     <app-title title="在线支付"></app-title>
-    <app-footer title="确定支付" :total_price="total_price" url="/"></app-footer>
+    <footer>
+      <div>待支付 <span> ¥ {{detail.total_price}}</span></div> 
+      <a  class="router-link-active" @click.prevent="handleClick">确定支付</a>
+      </footer>
   </div>
 </template>
 
@@ -49,35 +52,21 @@
   import Cell from '../../otter/components/cell'
   import AppFooter from '../../components/footer'
   import PayMode from './payMode.vue'
-import { getOrderDetail } from '../../libs/api.js'
+  import { getOrderDetail, submitPay } from '../../libs/api.js'
   export default {
     data(){
       return {
         active: false,
         selected: 2,
-        left_time: 10,
+        left_time: 100,
         total_price: 0,
         timer: false,
         discount: 8,
         create_time: '',
-        products: [
-          {
-            'title':'农夫山泉',
-            'price': 12.20,
-            'amount': 3
-          },
-          {
-            'title': '口香糖',
-            'price': 9.1,
-            'amount': 1
-          },
-          {
-            'title': '可口可乐',
-            'price': 3.50,
-            'amount': 4
-          }
-        ],
-        detail: {}
+        products: [],
+        detail: {},
+        pay_detail:{},
+        url:''
       }
     },
     created () {
@@ -100,7 +89,30 @@ import { getOrderDetail } from '../../libs/api.js'
         } else {
           return 0
         }
+      },
+      handleClick () {
+        var _this = this
+        var order_id = _this.$route.query.order_id || store.get('order_id')
+        var req_data = {
+          order_id: order_id
+        }
+        
+        submitPay(reqData).then(function(rep){
+          alert('ok')
+          //alert(JSON.stringify(rep))
+          //_this.pay_detail = JSON.parse(rep.data.data)
+          //var pay_url = _this.pay_detail.data.payUrl
+          //alert(pay_url)
+          //window.location.href = pay_url
+        }, function(rej){
+          alert('rej')
+        })
+        .catch(function(err){
+          alert('error!')
+        })
+        alert('done!')
       }
+
     },
     computed: {
       pay_price (){
