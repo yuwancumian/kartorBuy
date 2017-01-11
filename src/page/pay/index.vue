@@ -1,6 +1,9 @@
 <template>
   <div class="pay">
-    <timer :left_time="left_time"></timer>
+    <!--<timer :left_time="left_time"></timer>-->
+    <div class="tips">
+      支付剩余时间 {{left_time |toMinite }} 
+    </div>
     <!--<div class="ot-panel" style="margin-top: -1px">
       <pay-mode v-model="selected"></pay-mode>
     </div>-->
@@ -20,9 +23,10 @@
         <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
       </div>
       <div class="pay-info">
-        订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span> 
+        <span style="color: #999">订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span> 
+          </span>
         <div>
-          待支付 ¥<span class="pay_price">{{pay_price}}</span>
+          待支付 <span class="pay-price">¥{{detail.price}}</span>
         </div>
       </div>
     </div>
@@ -33,15 +37,19 @@
       <input type="text" placeholder="口味、偏好等" />
     </div>
     <div class="ot-panel">
+      <div class="title">配送费：<span style="float: right;color: #f43530;text-decoration: line-through"><span class="fee" style="color: #333">1元</span></span>
+</div>
+         </div>
+    <div class="ot-panel">
       <div class="container">
       <div>注：请尽量在下单后 6 小时内到取货地点取货，12 小时后如未确认收货，系统将自动确认收货</div>
-      <span>商家不支持开发票</span>
+      <span class="pay-ticket">商家不支持开发票</span>
       </div>
     </div>
     
     <app-title title="在线支付"></app-title>
     <footer>
-      <div>待支付 <span> ¥ {{detail.total_price}}</span></div> 
+      <div>待支付 <span> ¥ {{detail.price}}</span></div> 
       <a  class="router-link-active" @click.prevent="handleClick">确定支付</a>
       </footer>
   </div>
@@ -58,11 +66,13 @@
       return {
         active: false,
         selected: 2,
-        left_time: 100,
+        left_time: 500,
+        child_time: 0,
         total_price: 0,
         timer: false,
         discount: 8,
         create_time: '',
+        update_date: '',
         products: [],
         detail: {},
         pay_detail:{},
@@ -74,22 +84,10 @@
       var order_id = _this.$route.query.order_id || store.get('order_id')
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
-        console.log(_this.detail.create_time)
+        //console.log(_this.detail.create_time)
       })
     },
     methods: {
-      left_time (){
-        var update_date = this.detail.create_time
-        console.log(update_date)
-        var now_date = new Date()
-        var end_date = new Date(update_date.getTime())
-        end_date.setMinutes(update_date.getMinutes()+15)
-        if (Date.parse(end_date) > Date.parse(now_date)){
-          return (Date.parse(end_date) - Date.parse(now_date))/1000
-        } else {
-          return 0
-        }
-      },
       handleClick () {
         var _this = this
         var order_id = _this.$route.query.order_id || store.get('order_id')
@@ -97,26 +95,50 @@
           order_id: order_id
         }
         
-        submitPay(reqData).then(function(rep){
-          alert('ok')
-          //alert(JSON.stringify(rep))
-          //_this.pay_detail = JSON.parse(rep.data.data)
-          //var pay_url = _this.pay_detail.data.payUrl
-          //alert(pay_url)
-          //window.location.href = pay_url
-        }, function(rej){
-          alert('rej')
+        submitPay(req_data).then(function(rep){
+          _this.pay_detail = JSON.parse(rep.data.data)
+          var pay_url = _this.pay_detail.data.payUrl
+          window.location.href = pay_url
         })
         .catch(function(err){
-          alert('error!')
+          alert(JSON.stringify(err))
         })
-        alert('done!')
       }
 
     },
     computed: {
-      pay_price (){
-        return parseFloat(this.detail.total_price - this.detail.discount_amount).toFixed(2)
+      left_time (){
+        var _this = this
+        _this.update_date = new Date(('' + _this.detail.create_time).replace(/-/g, "/") || 0)
+        var now_date = new Date()
+  
+        if ( !_this.detail.create_time  ) {
+          return 
+        }
+        var end_date = new Date(_this.update_date)
+        
+        end_date.setMinutes(_this.update_date.getMinutes()+14)
+        var a = Date.parse(now_date)
+        var b = Date.parse(end_date)
+       _this.child_time = (b-a)/1000
+        if (b > a){
+          _this.child_time = (b-a)/1000
+        } else {
+          _this.child_time = 0
+        }
+        var x = setInterval(function(){
+          if (_this.child_time > 0){
+            _this.child_time--
+          } else {
+            clearInterval(x)
+          }
+        },1000)
+        return _this.child_time
+       }
+    },
+    filters: {
+      toMinite (value){
+        return  Math.round(value/60) + ' 分 '+ value%60 + ' 秒'
       }
     },
     components: {

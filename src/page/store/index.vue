@@ -19,24 +19,24 @@
         </div>
         
         
-        <div class="discount" @click="openModal" v-if="discount!=''">
+        <div class="discount" @click="openModal" v-if="discount!=''&&discount!=1">
           <span class="icon-discount" ></span>
           全场 {{discount*10}} 折
         </div>
       </div>
     </div>
-    <div class="swipe">
-    <mt-swipe :auto="4000">
-      <mt-swipe-item>
-        <img :src="slide[0]" alt="">
-      </mt-swipe-item>
-      <mt-swipe-item>
-        <img :src="slide[1]" alt="">
-      </mt-swipe-item>
-      <mt-swipe-item>
-        <img :src="slide[2]" alt="">
-      </mt-swipe-item>
-    </mt-swipe>
+    <div class="swipe" v-if="products.length > 0">
+      <mt-swipe :auto="4000">
+        <mt-swipe-item v-if="slide[0]">
+          <img :src="slide[0]" alt="">
+        </mt-swipe-item>
+        <mt-swipe-item v-if="slide[1]">
+          <img :src="slide[1]" alt="">
+        </mt-swipe-item>
+        <mt-swipe-item v-if="slide[2]">
+          <img :src="slide[2]" alt="">
+        </mt-swipe-item>
+      </mt-swipe>
     </div>
     <div class="shop-list" 
       v-if="products.length > 0"
@@ -68,7 +68,9 @@
     <app-footer 
       title="去结算" 
       :total_price="total_price"
-      :url="url" v-if="is_onsale<2">
+      :url="url" v-if="is_onsale<2"
+      :class="{active: is_active}"
+      >
     </app-footer>
     <div class="submit-btn" v-else>
       商家休息中，暂不接单
@@ -122,6 +124,7 @@
         loading: false,
         page: 1,
         slide: [],
+        is_active: false,
         products:[
           {
             thumbnail: '',
@@ -147,10 +150,16 @@
     methods:{
       addTotalPrice(itemPrice){
         this.total_price += (parseFloat(itemPrice))*this.discount
+        if (this.total_price > 0) {
+          this.is_active = true
+        }
         console.log((this.total_price).toFixed(2))
       },
       minusTotalPrice(itemPrice){
         this.total_price -= (parseFloat(itemPrice))*this.discount
+        if ( this.total_price == 0) {
+          this.is_active = false
+        }
         console.log((this.total_price).toFixed(2))
       },
       openModal(){
@@ -183,11 +192,11 @@
     },
     computed: {
       url () {
-        if ( store.get('contact_name') && store.get('contact_mobile') ) {
-          return '/pay'
-        } else {
-          return '/inputInfo'
-        }
+        // if ( store.get('contact_name') && store.get('contact_mobile') ) {
+          //return '/pay'
+        // } else {
+           return '/inputInfo'
+        // }
       }
     },
     created(){

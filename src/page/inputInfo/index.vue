@@ -29,6 +29,12 @@
         order_id: ''
       }
     },
+    created (){
+      if ( store.get('contact_name') && store.get('contact_mobile') ){
+        this.contact_name = store.get('contact_name')
+        this.contact_mobile = store.get('contact_mobile')
+      }
+    },
     methods: {
       handleClick () {
         var _this = this

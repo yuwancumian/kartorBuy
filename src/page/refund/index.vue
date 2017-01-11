@@ -1,8 +1,8 @@
 <template>
   <div class="refund">
-    <cell title="订单金额" label="¥ 22.30"> </cell>
+    <cell title="订单金额" :label="order_price | addY"> </cell>
     <field title="退款金额" >
-      <input type="text" class="field-input" placeholder="请输入退款原因" v-model="refund_money"/>
+      <input type="text" class="field-input" placeholder="请输入退款金额" v-model="refund_money"/>
     </field>
     <div class="ot-field">
       <div class="ot-title">
@@ -10,11 +10,10 @@
       </div>
       <div>
          <select class="reason" name="" v-model="refund_reason">
-            <option value="1">请选择原因</option>
-            <option value="2">质量问题</option>
-            <option value="3">送货速度慢</option>
-            <option value="4">商品破损/变形</option>
-            <option value="5">其他</option>
+            <option value="1">质量问题</option>
+            <option value="2">送货速度慢</option>
+            <option value="3">商品破损/变形</option>
+            <option value="4">其他</option>
           </select>
       </div>
     </div>
@@ -46,12 +45,12 @@
   import Field from '../../components/field'
   import Cell from '../../otter/components/cell'
   import { MessageBox, Checklist } from 'mint-ui'
-  import { refundApply } from '../../libs/api.js'
+  import { getOrderDetail, refundApply } from '../../libs/api.js'
   //import axios from 'axios'
   export default {
     data (){
       return {
-        refund_money: 0,
+        order_price: 0,
         refund_reason: 1,
         refund_note: '',
         picture: []
@@ -59,6 +58,18 @@
     },
     components: {
       Field, Checklist, Cell
+    },
+    created (){
+      var _this = this
+      var id = this.$route.query.order_id
+      getOrderDetail(id).then(function(rep){
+        _this.order_price = rep.data.data.price
+      })
+    },
+    filters: {
+      addY (value) {
+        return '¥ ' + value
+      }
     },
     methods: {
       getPic(){

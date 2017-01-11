@@ -1,5 +1,6 @@
 <template>
   <div class="order-list">
+    <app-title title="订单"></app-title>
     <div class="ot-panel" v-for="order in orders">
       <div class="ot-panel-bd">
         <router-link 
@@ -20,11 +21,11 @@
                 <td>x {{good.quantity}}</td>
                 <td>¥{{good.price}}</td>
               </tr>
-              <tr class="tfoot">
-                <td colspan="3" style="text-align:left">共 {{order.total_num}} 件商品，实付
+              <tfoot class="tfoot">
+                <th colspan="3" style="text-align: right;font-weight: normal;">共 {{order.total_num}} 件商品，实付
                   <span class="total-price">¥ {{order.total_price}}</span>  
-                </td>
-              </tr>
+                </th>
+              </tfoot>
             </table>
           
           </div>
@@ -39,9 +40,9 @@
           去支付
         </router-link>
         <router-link 
-          v-if="order.status == 4 || order_status == 5 "
+          v-if="order.status == 4 || order.status == 5 "
           class="btn btn-default"
-          :to="{ path: 'rate', query: {order_id: order.order_id, store_id: order.store_id}}">
+          :to="{ path: 'confirm', query: {order_id: order.order_id, store_id: order.store_id}}">
           确认收货
         </router-link>
         <router-link 
@@ -50,7 +51,7 @@
           :to="{ path: 'rate', query: {order_id: order.order_id, store_id: order.store_id}}">
           去评价
         </router-link>
-        <a v-if="order.status == 2"class="btn btn-default" @click="submitCancel(order.order_id)">取消订单</a>
+        <a v-if="order.status == 2 || order.status == 3"class="btn btn-default" @click="submitCancel(order.order_id)">取消订单</a>
         </router-link>
       </div>
       
@@ -107,25 +108,25 @@
           case 2:
             return '已支付，待备货'
           case 3:
-            return '商家已接单'
+            return '已支付，待备货'
           case 4:
             return '已备货'
           case 5:
-            return '商家到达取货点'
+            return '已到达取货点'
           case 6:
-            return '确认收货'
+            return '交易成功'
           case 7:
-            return '订单已取消'
+            return '已取消'
           case 8:
-            return '申请退货'
+            return '申请退款'
           case 9: 
-            return '退货中'
+            return '退款中'
           case 10:
-            return '同意退货'
+            return '同意退款'
           case 11:
-            return '拒绝退货'
+            return '拒绝退款'
           case 12:
-            return '退货成功'
+            return '退款成功'
         }
       }
     }

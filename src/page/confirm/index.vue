@@ -86,9 +86,10 @@
             MessageBox('提示', '操作成功')
               .then( () => {
                 _this.$router.push({
-                  name: 'store',
-                  params: {
-                    id: store.get('store_id')
+                  path: 'rate',
+                  query: {
+                    order_id: store.get('order_id'),
+                    store_id: store.get('store_id')
                   }
                 })
               })
@@ -120,27 +121,27 @@
           case 1:
             return '待支付'
           case 2:
-            return '支付成功'
+            return '已支付，待备货'
           case 3:
-            return '商家已接单'
+            return '已支付，待备货'
           case 4:
             return '已备货'
           case 5:
-            return '商家到达取货点'
+            return '已到达取货点'
           case 6:
-            return '确认收货'
+            return '交易成功'
           case 7:
-            return '订单已取消'
+            return '已取消'
           case 8:
-            return '申请退货'
+            return '申请退款'
           case 9: 
-            return '退货中'
+            return '退款中'
           case 10:
-            return '同意退货'
+            return '同意退款'
           case 11:
-            return '拒绝退货'
+            return '拒绝退款'
           case 12:
-            return '退货成功'
+            return '退款成功'
         }
       }
     }

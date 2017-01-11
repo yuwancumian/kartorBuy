@@ -1,7 +1,19 @@
 <template>
 	<div class="goods-info">
 		<header>
-			<img :src="goods_info.picture.split(',')[0]" alt="">
+      <div class="swipe">
+        <mt-swipe :auto="4000">
+          <mt-swipe-item v-if="slide[0]">
+            <img :src="slide[0]" alt="">
+          </mt-swipe-item>
+          <mt-swipe-item v-if="slide[1]">
+            <img :src="slide[1]" alt="">
+          </mt-swipe-item>
+          <mt-swipe-item v-if="slide[2]">
+            <img :src="slide[2]" alt="">
+          </mt-swipe-item>
+        </mt-swipe>
+      </div>
 		</header>
     <div class="single-panel">
       <div class="container">
@@ -43,14 +55,16 @@
     <app-footer 
       title="去结算" 
       :url="url" 
-      :total_price="total_price">
+      :total_price="total_price"
+      :class="{active: is_active}"
+      >
     </app-footer>
 	</div>
 </template>
 
 <script>
 import {Cell} from 'mint-ui'
-import { Progress, MessageBox, Indicator } from 'mint-ui'
+import { Progress, MessageBox, Indicator, Swipe, SwipeItem } from 'mint-ui'
 import Counter from '../../components/counter'
 import AppHeader from '../../components/header'
 import AppFooter from '../../components/footer'
@@ -65,6 +79,7 @@ export default {
   },
   data () {
     return {
+      is_active: false,
       goods_info:{
         id: 12,
         name: '香菇粉丝素菜',
@@ -78,6 +93,7 @@ export default {
       total_price: 0.00,
       goods_num: 0,
       goods_list: [],
+      slide:[],
       order_id: ''
     }
   },
@@ -89,11 +105,11 @@ export default {
       return Math.floor(100*this.goods_info.like_count/this.total)
     },
     url () {
-      if ( store.get('contact_name') && store.get('contact_mobile') ) {
-        return '/pay'
-      } else {
+      // if ( store.get('contact_name') && store.get('contact_mobile') ) {
+      //   return '/pay'
+      // } else {
         return '/inputInfo'
-      }
+      //}
     }
   },
   methods: {
@@ -107,6 +123,7 @@ export default {
           goods_id: parseInt(this.$route.params.id),
           goods_num: this.goods_num
         })
+        this.is_active = true
       } 
       if ( this.goods_num > 1 ) {
         this.goods_list[0].goods_num = this.goods_num
@@ -119,6 +136,7 @@ export default {
 
       if (this.goods_num === 0) {
         this.goods_list = []
+        this.is_active = false
       } else {
         this.goods_list[0].goods_num = this.goods_num
       }
@@ -133,6 +151,12 @@ export default {
       .then(function(rep){
         console.log(rep.data)
         _this.goods_info = rep.data.data
+        var p = rep.data.data.picture
+        if (!p && typeof p === 'object') {
+          return
+        } else {
+          _this.slide = rep.data.data.picture.split(',')
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -207,6 +231,9 @@ export default {
 		img{
 			width: 100%;
 		}
+    .swipe{
+      height: 200px;
+    }
 	}
   .updown{
     clear: both;

@@ -2,7 +2,7 @@
   <div class="rate">
     <div class="rate-title">
       <img :src="store_icon" alt="">
-       {{store_name}}
+      <span>{{store_name}}</span>
     </div>
     <div class="rate-grade">
       <h3>商家服务评价</h3>
