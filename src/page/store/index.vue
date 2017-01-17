@@ -223,8 +223,11 @@
         console.log('created' +_this.store_name)
       })
       getStoreNotice(id).then(function(rep){
-        if (rep.data.data.discount !== undefined ) {
+        if (rep.data.data.discount) {
           _this.discount = rep.data.data.discount
+          store.set('discount', _this.discount)
+        } else {
+          _this.discount = 1
           store.set('discount', _this.discount)
         }
       })

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import { getShopList, getCarPosition } from '../../libs/api.js'
+  import { getShopList, getCarPosition, getUserInfo } from '../../libs/api.js'
 
   export default {
     data(){
@@ -68,6 +68,20 @@
             }, false)  
           }
         })
+      getUserInfo().then(function(rep){
+         _this.user_id = rep.data.data.user_id
+         _this.license_plate = rep.data.data.license_plate
+         _this.contact_name = rep.data.data.real_name
+         _this.contact_mobile = rep.data.data.contact_mobile
+        store.set('user_id',_this.user_id)
+        store.set('license_plate',_this.license_plate)
+        if (_this.contact_name ) {
+          store.set('contact_name', _this.contact_name)
+        }
+        if ( _this.contact_mobile) {
+          store.set('contact_mobile', _this.contact_mobile)
+        }
+      })
       getCarPosition('f157nnn235ff69c4d6f8ed5c475497b472cHHHHH')
         .then(function(rep){
           store.set('position',rep.data.data)
@@ -79,8 +93,7 @@
     },
     mounted(){
       var _this = this
-      console.log(_this.shops)
-      
+      console.log(_this.shops) 
       
     }
   }

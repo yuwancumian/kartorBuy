@@ -146,25 +146,31 @@
               })
               return
             } else if (rep.data.code == 3) {
-               MessageBox({
+              MessageBox({
                 title: '提示',
                 message: '抱歉，商品已下架'
+              }).then( () => {
+                 _this.$router.push({
+                  name: 'store', params: { id: _this.detail.store_id }
+                 }) 
               })
               return
             } else if (rep.data.code == 4) {
-               MessageBox({
+              MessageBox({
                 title: '提示',
                 message: '抱歉，商店已歇业'
+              }).then( () => {
+                _this.$router.push('orderList')
               })
               return
             } else if (rep.data.code == 5) {
-               MessageBox({
+              MessageBox({
                 title: '提示',
                 message: '抱歉，商店未营业'
               })
               return
             } else if (rep.data.code == 6) {
-               MessageBox({
+              MessageBox({
                 title: '提示',
                 message: '抱歉，您有未结束订单'
               })
