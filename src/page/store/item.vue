@@ -1,19 +1,21 @@
 <template>
   <div class="row">
     <div class="col-4">
-      <img class="item-pic" :src="product.picture | getIndex" alt="">
+      <router-link :to="{path: '/goods/'+ product.goods_id}">
+        <img class="item-pic" :src="product.picture | getIndex" alt="">
+      </router-link>
     </div>
     <div class="col-12">
+      <router-link :to="{path: '/goods/'+ product.goods_id}">
       <ul class="item-info">
         <li>
-          <router-link :to="{path: '/goods/'+ product.goods_id}">
             {{product.name}}
-          </router-link>
         </li>
         <li>月销量 {{product.quantity||0}} 
-          <span v-if="product.u_like!=null"> 好评度 {{product.u_like*100}}%</span></li>
+          <span v-if="product.u_like!=null"> 好评度 {{Math.floor(product.u_like*100)}}%</span></li>
         <li>¥{{product.price}}</li>
       </ul>
+      </router-link>
     </div>
     <div class="col-8" v-if="is_onsale==1">
     <counter v-on:addPrice="addItemPrice" v-on:minusPrice="minusItemPrice"></counter>
