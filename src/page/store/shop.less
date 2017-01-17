@@ -13,7 +13,43 @@
 	}
   .swipe{
     height: 200px;
+		//animation: .5s unfolding cubic-bezier(0,0,.25,1);
+		position: relative;
+		.road{
+			position: absolute;
+			color: #fff;
+			top: 56px;
+			left: 8px;
+			width: 160px;
+			height: 30px;
+			background: url(../../assets/images/icon-road.png) no-repeat;
+			background-size: 160px;
+			font-size: 12px;
+			padding-left: 42px;
+			line-height: 28px;
+		}
   }
+	.folding{
+		height: 0;
+		display: none;
+		//animation: .5s folding cubic-bezier(0,0,.25,1);
+	}
+	@keyframes folding {
+		0% {
+			height: 200px;
+		}
+		100% {
+			height: 0;
+		}
+	}
+	@keyframes unfolding {
+		0% {
+			height: 0
+		}
+		100% {
+			height: 200px
+		}
+	}
 }
 
 .shop-header{
@@ -21,6 +57,10 @@
   padding: 10px 0 5px;
   color: #fff;
 	background: #35A1AE;
+	//position: fixed;
+	//top: 0;
+	width: 100%;
+	//z-index: 100;
 	.title{
     padding: 6px 0;
     font-size: 16px;
@@ -193,7 +233,7 @@
 .modal{
   width: 100vw;
   height: 100vh;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -208,6 +248,10 @@
       font-weight: normal;
       margin-bottom: 16px;
       font-size: 20px;
+			max-width: 72%;
+			margin: auto;
+			line-height: 33px;
+			padding-bottom: 8px;
     }
     
     .set-star{

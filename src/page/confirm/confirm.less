@@ -29,23 +29,32 @@
     border-bottom: 1px solid #E5E5E5;
     div{
       float: left;
-			width: 50%;
-      padding: 5px 0px 5px 10px;
+			width: 55%;
+			/*width: 50%;*/
+      padding: 8px 0px 8px 10px;
 			>span{
 				display: inline-block;
-				width: 110px;
+				width: 120px;
+				/*width: 110px;*/
+				max-height: 50px;
 				overflow: hidden;
-				white-space: nowrap;
 				text-overflow: ellipsis;
+				line-height: 20px;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
 			}
       img{
         width: 32px;
 				vertical-align: middle;
+				float: left;
+				margin-right: 6px;
       }
     }
     p{
       padding: 4px 10px 4px 0;
-			width: 50%;
+			/*width: 50%;*/
+			width: 45%;
       float: right;
 			margin-top: 0px;
       margin-bottom: 0;

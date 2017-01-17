@@ -28,7 +28,7 @@ export const getStoreNotice = (id) => {
 
 //进入店铺，商品列表
 export const getGoodsList = (id,page) => {
-  return axios.get(encodeURI('/goods/list?store_id='+id+'&page=' + page + '&size=6'))
+  return axios.get('/goods/list?store_id='+id+'&page=' + page + '&size=6')
 }
 //商品详情
 export const getGoodsInfo = (id) => {
@@ -41,8 +41,8 @@ export const submitOrder = (data) => {
 }
 
 //订单列表
-export const getOrderList = (data) => {
-  return axios.post('/order/list', data)
+export const getOrderList = (id, page) => {
+  return axios.get('/order/list?&status=0&user_id=' + id + '&page=' + page + '&size=6' )
 }
 
 //订单状态
@@ -86,8 +86,16 @@ export const submitGoodsUnlike = ( data ) => {
 }
 // 支付
 export const submitPay = (data) => {
-  alert('pay in')
   return axios.post('/pay', data)
+}
+// 备注
+export const submitOrderRemark = (data) => {
+  return axios.post('/order/remark', data)
+}
+
+//个人信息补全
+export const completeUserInfo = (data) => {
+  return axios.post('/user/complete', data)
 }
 
 //行车位置

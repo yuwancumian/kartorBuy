@@ -16,11 +16,11 @@
     padding-left: 10px !important;
     h4{
       font-size: 14px;
-      padding-top: 12px;
-      padding-bottom: 14px;
+      padding-top: 6px;
+      padding-bottom: 12px;
 			margin: 0;
 			position: relative;
-			height: 40px;
+			overflow: hidden;
 			&:after{
 				content: '';
 				position: absolute;
@@ -34,9 +34,13 @@
 			div{
 				float:left;
 				width: 120px;
+				max-height: 50px;
 				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
+				text-overflow: ellipsis ;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+
 			}
       span{
         float: right;
@@ -50,3 +54,13 @@
     }
   }
 }
+.no-order{
+	text-align: center;
+	background-size: 60px;
+	padding-top: 40%;
+	color: #999;
+	img{
+		width: 72px;
+	}
+}
+

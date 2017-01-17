@@ -94,7 +94,8 @@ export default {
       goods_num: 0,
       goods_list: [],
       slide:[],
-      order_id: ''
+      order_id: '',
+      discount: 0
     }
   },
   computed: {
@@ -105,16 +106,16 @@ export default {
       return Math.floor(100*this.goods_info.like_count/this.total)
     },
     url () {
-      // if ( store.get('contact_name') && store.get('contact_mobile') ) {
-      //   return '/pay'
-      // } else {
+      if ( store.get('contact_name') && store.get('contact_mobile') ) {
+         return '/pay'
+       } else {
         return '/inputInfo'
-      //}
+      }
     }
   },
   methods: {
     addP: function(counter){
-      this.total_price = counter * this.goods_info.price
+      this.total_price = (counter * this.goods_info.price)*this.discount
       console.log(this.total_price)
       this.goods_num = counter
       console.log(this.goods_num)
@@ -131,7 +132,7 @@ export default {
       console.log(this.goods_list)
     },
     minusP: function(counter){
-      this.total_price = counter * this.goods_info.price
+      this.total_price = (counter * this.goods_info.price)*this.discount
       this.goods_num = counter
 
       if (this.goods_num === 0) {
@@ -146,6 +147,7 @@ export default {
   created(){
     var _this = this
     _this.goods_list = []
+    _this.discount = store.get('discount')
     console.log()
     getGoodsInfo(this.$route.params.id)
       .then(function(rep){
@@ -164,19 +166,20 @@ export default {
   },
   beforeRouteLeave (to, from, next) {
     var _this = this
-    if ( to.path === "/inputInfo") {
-      if ( this.goods_list.length == 0 ) {
-        MessageBox('提示', '请添加商品')
-      } else {
-        store.set("goods_list",[{
-          "goods_id": this.goods_info.id,
-          "goods_num": this.goods_info.goods_num
-        }])
-      }
-      store.set("store_id",this.goods_info.store_id)
-      console.log(store.get("goods_list"))
-      next()
-    } else if (to.path === "/pay") {
+    // if ( to.path === "/inputInfo") {
+    //   if ( this.goods_list.length == 0 ) {
+    //     MessageBox('提示', '请添加商品')
+    //   } else {
+    //     store.set("goods_list",[{
+    //       "goods_id": this.goods_info.id,
+    //       "goods_num": this.goods_info.goods_num
+    //     }])
+    //   }
+    //   store.set("store_id",this.goods_info.store_id)
+    //   console.log(store.get("goods_list"))
+    //   next()
+    // } else if (to.path === "/pay") {
+    if ( to.path === "/pay" || to.path === '/inputInfo' ) {
       if ( this.goods_list.length == 0 ) {
         MessageBox('提示', '请添加商品')
       } else {
@@ -193,6 +196,31 @@ export default {
         submitOrder(reqData).then(function(rep){
           console.log(rep) 
           Indicator.close()
+          if (rep.data.code == 2) {
+              MessageBox({
+                title: '提示',
+                message: '抱歉，商品库存不足'
+              })
+              return
+            } else if (rep.data.code == 3) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商品已下架'
+              })
+              return
+            } else if (rep.data.code == 5) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商店未营业'
+              })
+              return
+            } else if (rep.data.code == 6) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，您有未支付订单'
+              })
+              return
+            }
           _this.order_id = rep.data.data.order_id
           store.set('order_id', _this.order_id)
           next()

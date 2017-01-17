@@ -29,7 +29,7 @@
       <mt-swipe :auto="4000">
         <mt-swipe-item v-if="slide[0]">
           <img :src="slide[0]" alt="">
-        </mt-swipe-item>
+        </mt-swipe-item>  
         <mt-swipe-item v-if="slide[1]">
           <img :src="slide[1]" alt="">
         </mt-swipe-item>
@@ -37,6 +37,10 @@
           <img :src="slide[2]" alt="">
         </mt-swipe-item>
       </mt-swipe>
+      <div class="road">
+        <span v-if="is_two_sides==1"> 支持道路对面取货</span>
+        <span v-else> 不支持道路对面取货</span>
+      </div>
     </div>
     <div class="shop-list" 
       v-if="products.length > 0"
@@ -68,7 +72,8 @@
     <app-footer 
       title="去结算" 
       :total_price="total_price"
-      :url="url" v-if="is_onsale<2"
+      :url="url" 
+      v-if="is_onsale<2"
       :class="{active: is_active}"
       >
     </app-footer>
@@ -125,6 +130,7 @@
         page: 1,
         slide: [],
         is_active: false,
+        is_two_sides: 0,
         products:[
           {
             thumbnail: '',
@@ -137,6 +143,7 @@
         modal_display: false,
         goods_list:[],
         order_id: '',
+        url: ''
       }
     },
     components: {
@@ -179,7 +186,7 @@
           getGoodsList(id,_this.page).then(function(rep){
             var newList = rep.data.data    
             _this.products.push(...newList)  
-            if ( newList.length < 10 ) {
+            if ( newList.length < 6 ) {
               _this.loading = true
               return false 
             }      
@@ -190,20 +197,20 @@
       }
       
     },
-    computed: {
-      url () {
-        // if ( store.get('contact_name') && store.get('contact_mobile') ) {
-          //return '/pay'
-        // } else {
-           return '/inputInfo'
-        // }
-      }
-    },
+
+
     created(){
       var _this = this
       var id = _this.$route.params.id
       var page = _this.page
+      Indicator.open()
+     
       this.goods_list = []
+       if ( store.get('contact_name') && store.get('contact_mobile') ) {
+           _this.url = '/pay'
+        } else {
+        _this.url = '/inputInfo'
+        }
       getStoreInfo(id).then(function(rep){
         _this.store_name = rep.data.data.store_name
         _this.store_icon = rep.data.data.store_icon
@@ -211,32 +218,50 @@
         _this.onsale_end = rep.data.data.onsale_end
         _this.avg_rating = rep.data.data.avg_rating
         _this.is_onsale = rep.data.data.is_onsale
-        _this.slide = rep.data.data.picture.split(',')
+        _this.is_two_sides = rep.data.data.is_two_sides
+        _this.slide = rep.data.data.picture.split(',').reverse()
         console.log('created' +_this.store_name)
       })
       getStoreNotice(id).then(function(rep){
         if (rep.data.data.discount !== undefined ) {
           _this.discount = rep.data.data.discount
+          store.set('discount', _this.discount)
         }
       })
       getGoodsList(id,page).then(function(rep){
+        Indicator.close()
         _this.products = rep.data.data        
       })
-      console.log(_this.is_onsale)
+      // $(window).on('scroll', function(){
+      //   var y_scroll_pos = window.pageYOffset;
+      //   var scroll_pos_test = 100;
+      //   var header_height = $('.shop-header').height()
+      //   console.log(header_height)
+      //   if(y_scroll_pos > scroll_pos_test) {
+      //       //do stuff
+      //     $('.swipe').addClass('folding')
+      //     $('.road').addClass('folding')
+      //   }
+      //   if(y_scroll_pos < 10) {
+      //     $('.swipe').removeClass('folding')
+      //     $('.road').removeClass('folding')
+      //   }
+      // })
     },
     
     beforeRouteLeave ( to, from, next ) {
       var _this = this
-      if ( to.path === "/inputInfo" ) {
-        if (this.goods_list.length == 0 ) {
-          MessageBox('提示', '请添加商品')
-        } else {
-          store.set("goods_list", this.goods_list)
-          store.set("store_id", this.$route.params.id)
-          next()
-        }
-      } 
-      else if ( to.path === "/pay" ) {
+      // if ( to.path === "/inputInfo" ) {
+      //   if (this.goods_list.length == 0 ) {
+      //     MessageBox('提示', '请添加商品')
+      //   } else {
+      //     store.set("goods_list", this.goods_list)
+      //     store.set("store_id", this.$route.params.id)
+      //     next()
+      //   }
+      // } 
+      // else if ( to.path === "/pay" ) {
+      if ( to.path === "/pay" || to.path === '/inputInfo' ) {
         if ( this.goods_list.length == 0 ) {
           MessageBox('提示', '请添加商品')
         } else {
@@ -252,15 +277,50 @@
           console.log(this.goods_list)
           Indicator.open()
           submitOrder(reqData).then(function(rep){
-            console.log(rep) 
             Indicator.close()
-            _this.order_id = rep.data.data.order_id
-            store.set('order_id', _this.order_id)
-            next()
-          })
-          .catch(function(error){
-            console.log(error)
-          })
+            if (rep.data.code == 2) {
+              MessageBox({
+                title: '提示',
+                message: '抱歉，商品库存不足'
+              })
+              return
+            } else if (rep.data.code == 3) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商品已下架'
+              })
+              return
+            } else if (rep.data.code == 4) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商店已歇业'
+              })
+              return
+            } else if (rep.data.code == 5) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商店未营业'
+              })
+              return
+            } else if (rep.data.code == 6) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，您有未结束订单'
+              })
+              return
+            } else {
+             
+              // _this.$router.push('/pay')
+              _this.order_id =rep.data.data.order_id
+              store.set('order_id', _this.order_id)
+              }
+              next()              
+            })
+            .catch(function(err){
+              Indicator.close()
+              console.log(err) 
+            }
+          )
         }
       } else {
         next()

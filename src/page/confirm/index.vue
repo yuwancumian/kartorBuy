@@ -14,22 +14,22 @@
       </p>
 
     </div>
-    <div class="swipe">
+    <div class="swipe" v-if="slide.length>0" >
     <mt-swipe :auto="4000">
-      <mt-swipe-item>
-        <img :src="slide[0]" alt="">
-      </mt-swipe-item>
-      <mt-swipe-item>
-        <img :src="slide[1]" alt="">
-      </mt-swipe-item>
-      <mt-swipe-item>
-        <img :src="slide[2]" alt="">
-      </mt-swipe-item>
-    </mt-swipe>
+        <mt-swipe-item v-if="slide[0]">
+          <img :src="slide[0]" alt="">
+        </mt-swipe-item>
+        <mt-swipe-item v-if="slide[1]">
+          <img :src="slide[1]" alt="">
+        </mt-swipe-item>
+        <mt-swipe-item v-if="slide[2]">
+          <img :src="slide[2]" alt="">
+        </mt-swipe-item>
+      </mt-swipe>
     </div> 
     <div class="submit-btn" @click="handleConfirm">
       <a>确定收货</a>
-      <span>5小时候系统将自动确认收货</span>
+      <span>5小时后系统将自动确认收货</span>
     </div>
     <div class="confirm-link">
       <div class="wrapper">
@@ -40,7 +40,8 @@
            <span class="icon-tele"></span>联系商家
         </a>
       </div>
-    </div>
+    </div>  
+    <app-title title="驾图购"> </app-title>
   </div>
 </template>
 
@@ -63,7 +64,6 @@
     },
     created () {
       var _this = this
-      _this.slide = store.get('slide')
       var order_id = _this.$route.query.order_id
       var store_id = _this.$route.query.store_id
       getOrderDetail(order_id).then(function(rep){
@@ -71,6 +71,7 @@
       })
       getStoreInfo(store_id).then(function(rep){
         _this.contact_phone = rep.data.data.contact_phone
+        _this.slide = rep.data.data.picture.split(',')
       })
   
     },
@@ -83,8 +84,9 @@
         submitOrderConfirm(reqData)
           .then(function(rep){
             console.log(rep)
-            MessageBox('提示', '操作成功')
+            MessageBox.confirm('是否确认已领取到货物？')
               .then( () => {
+                
                 _this.$router.push({
                   path: 'rate',
                   query: {

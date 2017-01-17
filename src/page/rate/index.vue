@@ -1,5 +1,6 @@
 <template>
   <div class="rate">
+    <app-title title="评价"></app-title>
     <div class="rate-title">
       <img :src="store_icon" alt="">
       <span>{{store_name}}</span>
@@ -86,12 +87,18 @@
       },
       submitRate () {
         var _this =  this
+
         var reqData = {
           user_id: store.get('user_id'),
           store_id: _this.$route.query.store_id,
           order_id: _this.$route.query.order_id,
-          score: $('.set-star .active').length - 1,
+          score: document.getElementsByClassName('active').length - 1,
           comment: _this.comment
+        }
+
+        if (reqData.score == 0 ) {
+          MessageBox('提示', '亲，您还未做出评价')
+          return
         }
         submitStoreGrade ( reqData ).then(function(rep){
           console.log(rep) 

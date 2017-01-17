@@ -28,7 +28,7 @@
         <img 
           src="../../assets/images/icon-upload.png" 
           alt="" id="add-image"
-          @click = "getPic" >
+          @click = "getActionSheet" >
       </div>
     </div>
     <div class="ps">
@@ -37,6 +37,10 @@
     <div class="submit-btn" @click="handleSubmit">
       <p>提交申请</p>
     </div>
+    <mt-actionsheet
+      :actions="actions"
+      v-model="sheetVisible">
+    </mt-actionsheet>
     <app-title title="申请退款"> </app-title>
   </div>
 </template>
@@ -44,8 +48,9 @@
 <script>
   import Field from '../../components/field'
   import Cell from '../../otter/components/cell'
-  import { MessageBox, Checklist } from 'mint-ui'
+  import { MessageBox, Checklist, Actionsheet } from 'mint-ui'
   import { getOrderDetail, refundApply } from '../../libs/api.js'
+  import { insertImg } from './insertImg.js'
   //import axios from 'axios'
   export default {
     data (){
@@ -53,7 +58,17 @@
         order_price: 0,
         refund_reason: 1,
         refund_note: '',
-        picture: []
+        picture: [],
+        sheetVisible: false,
+        actions: [
+          {
+            name: '拍照',
+            method: this.takePhoto
+          }, {
+            name: '从相册中选择',
+            method: this.openAlbum
+          }
+        ]
       }
     },
     components: {
@@ -72,7 +87,7 @@
       }
     },
     methods: {
-      getPic(){
+      takePhoto(){
         var _this = this
         if (!('JSBridge' in window)) {
           return 
@@ -89,15 +104,41 @@
           if (resData.result == '1') {//成功
             //resData.data.url为返回的资源服务器的地址
             _this.picture.push(resData.data.url)
-            $('<img src='+ resData.data.url +'>').insertBefore($('#add-image'))
-            if ($('.upload-cert img').length > 3){
-              $('#add-image').css('display','none')
-            }
+            insertImg(JSON.stringify(resData.data.url))
           } else if (resData.result != '3') {
             pop.options.text = '上传失败，请重试';
             pop.init();
           }
         })
+      },
+      openAlbum () {
+        var _this = this
+        	var reqData;
+        if (!('JSBridge' in window)) {
+          return;
+        }
+
+        reqData = {};
+
+        JSBridge.callAPI('AppAPI.uploadImage', reqData, function(resData){
+           resData = resData.data;
+          if (!resData) {
+            return;
+          }
+          if (resData.result == '1') {//成功
+            //resData.data.url为返回的资源服务器的地址
+            _this.picture.push(resData.data.url)
+            insertImg(JSON.stringify(resData.data.url))
+          } else if (resData.result != '3') {
+            pop.options.text = '上传失败，请重试';
+            pop.init();
+          }
+
+        })
+
+      },
+      getActionSheet () {
+        this.sheetVisible = true
       },
       handleSubmit(){
         var _this = this
@@ -106,23 +147,41 @@
           order_id: this.$route.query.order_id,
           store_id: this.$route.query.store_id,
           cause: this.refund_reason,
-          descibe: this.refund_note,
+          describe: this.refund_note,
           refund_money: this.refund_money,
           pic: this.picture.join(',')
+        }
+        if ( !_this.refund_money ) {
+          MessageBox({
+            title: '提示',
+            message: '请输入退款金额'
+          })
+          return
+        }
+
+        console.log(_this.order_price)
+        if ( _this.refund_money > _this.order_price ) {
+          MessageBox({
+            title: '提示',
+            message: '抱歉，您输入的金额有误'
+          })
+          return
         }
         refundApply(subData).then(function(rep){
           MessageBox({
             title: '提示',
             message: '您的退款申请已经提交成功，请耐心等待商家处理 <br> <div style="font-size: 14px;line-height: 20px"> 如有疑问，请致电驾图购客服 4008054288 </div>',
             confirmButtonText: '返回订单中心'
+          }).then( () => {
+            _this.$router.push({
+              path: '/orderList', 
+              query: { 
+                order_id: _this.$route.query.order_id,
+                store_id: _this.$route.query.store_id
+              }
+            })
           })
-          _this.$router.push({
-            path: '/orderList', 
-            query: { 
-              order_id: _this.$route.query.order_id,
-              store_id: _this.$route.query.store_id
-            }
-          })
+          
         })
         
         

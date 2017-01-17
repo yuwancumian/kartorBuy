@@ -1,10 +1,21 @@
 .ot-step-container{
-	padding-top: 30px;
+	padding-top: 10px;
 }
 .ot-step{
-  padding: 0 0 0 10px;
+  padding: 16px 0 0 10px;
   position: relative;
-  height: 90px;
+  /*border-bottom: 1px solid #f5f5f5;*/
+  float: left;
+  width: 100%;
+  /*background: url(../../../assets/images/icon-line.png) no-repeat;*/
+  &:after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    left: 36px;
+    border-bottom: 1px solid #f5f5f5;
+    bottom: 0;
+  }
   .ot-step-dot{
     width: 10%;
     float: left;
@@ -23,8 +34,6 @@
   .ot-step-main{
     width: 90%;
     float:right;
-    margin-top: -6px;
-    border-bottom: 1px solid #f5f5f5;
 		padding-bottom: 16px;
     .title{
       font-size: 16px;
@@ -40,18 +49,20 @@
     p{
       color: #666;
       font-size: 14px;
+      line-height: 24px;
       margin-top: 10px;
       margin-bottom: 6px;
     }
   }
   .ot-step-tail{
+    position: absolute;
     height: 100%;
     border-left: 2px solid #ffae00;
     margin-left: 15px;
   }
 }
 .ot-step.no-desc{
-	height: 60px;
+	/*height: 60px;*/
 }
 .cash-flow-main{
   padding-top: 22px;

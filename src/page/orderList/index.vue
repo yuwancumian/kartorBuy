@@ -1,7 +1,13 @@
 <template>
-  <div class="order-list">
+  <div class="order-list" 
+    v-infinite-scroll="loadMore"
+    infinite-scroll-disabled="loading"
+    infinite-scroll-immediate-check="false"
+    infinite-scroll-distance="10">
     <app-title title="订单"></app-title>
-    <div class="ot-panel" v-for="order in orders">
+    <div class="ot-panel" 
+    v-for="order in orders" 
+    v-if="orders.length > 0">
       <div class="ot-panel-bd">
         <router-link 
           :to="{ path: 'order/detail', query: { order_id: order.order_id, store_id: order.store_id }}">
@@ -46,7 +52,7 @@
           确认收货
         </router-link>
         <router-link 
-          v-if="order.status == 6"
+          v-if="order.status == 6 && order.is_comment == 0"
           class="btn btn-default"
           :to="{ path: 'rate', query: {order_id: order.order_id, store_id: order.store_id}}">
           去评价
@@ -56,6 +62,12 @@
       </div>
       
     </div>
+    <div class="no-order" v-if="orders.length == 0">
+      <img src="../../assets/images/no-order.png" alt="">
+      <br>
+      <br>
+      亲，您暂无交易订单！
+    </div>
     
   </div>
 </template>
@@ -63,28 +75,23 @@
 <script>
   import OtPanel from '../../components/panel'
   import { getOrderList, submitOrderCancel } from '../../libs/api.js'
-  import {MessageBox} from 'mint-ui'
+  import {MessageBox, Indicator, InfiniteScroll} from 'mint-ui'
   export default {
     data(){
       return {
-        orders: [
-          {
-            store_name:'',
-            store_id: 0,
-            goods: null  
-          }
-        ]
+        orders: [],
+        page: 1,
+        loading: false
       }
     },
     created(){
+      Indicator.open()
       var _this = this
-      var reqData = {
-        user_id: store.get('user_id'),
-        status: 0
-      }
-      getOrderList(reqData).then(function(rep){
+      var user_id = store.get('user_id')
+      var page = _this.page
+      getOrderList( user_id, page ).then(function(rep){
+        Indicator.close()
         _this.orders = rep.data.data
-        console.log(_this.order)
       })
     },
     methods: {
@@ -97,8 +104,32 @@
             window.location.reload()
             console.log(rep)
           })
-        });
+        })
+      },
+      loadMore(){
+        var _this = this
+        Indicator.open({
+          spinnerType: 'fading-circle'
+        })
+        _this.loading = true
+        var id = store.get('user_id')
+        setTimeout(() => {
+          console.log('add more!')
+          _this.page += 1
+          console.log(_this.page)
+          getOrderList(id,_this.page).then(function(rep){
+            var newOrders = rep.data.data    
+            _this.orders.push(...newOrders)  
+            if ( newOrders.length < 6 ) {
+              _this.loading = true
+              return false 
+            }      
+          })
+          this.loading = false
+          Indicator.close()
+        },1600);
       }
+
     },
     filters: {
       statusToText (value) {

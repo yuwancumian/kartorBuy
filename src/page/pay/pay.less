@@ -2,22 +2,50 @@
 	padding-bottom: 60px;
 	.ot-panel{
 		h3{
-			margin-left: 10px;
+			// margin-left: 10px;
 			margin-bottom: 0;
 			padding-bottom: 12px;
 			border-bottom: 1px solid #e5e5e5;
       font-weight: bold;
 			font-size: 16px;
+			img{
+				width: 24px;
+			}
 		}
 	}	
 	.pay-remark{
 		.title{
 			display: inline-block;
+			width: 30%;
+		}
+		.pan{
+			position: relative;
+			padding: 10px 0;
+			margin-left: 10px;
 		}
 		input{
-			width: 70%;
+			width: 76%;
 			display: inline-block;
+			position: absolute;
+			top: 4px;
+			right: 5px;
 		}
+		::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+			text-align: right;
+		}
+		#pan1:after{
+				content: " ";
+				position: absolute;
+				left: 0;
+				bottom: 0;
+				right: 0;
+				height: 1px;
+				border-top: 1px solid #E5E5E5;
+				color: #E5E5E5;
+				transform-origin: 0 0;
+				transform: scaleY(0.5);
+		}
+		
 	}
 	.pay-info{
 		padding: 12px 10px;

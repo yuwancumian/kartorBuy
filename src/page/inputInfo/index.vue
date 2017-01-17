@@ -16,7 +16,7 @@
 
 <script>
   import { MessageBox, Field, Indicator } from 'mint-ui'
-  import { submitOrder } from '../../libs/api.js'
+  import { completeUserInfo } from '../../libs/api.js'
   //import axios from 'axios'
   export default {
     components:{
@@ -30,7 +30,14 @@
       }
     },
     created (){
+      alert(store.get('contact_name'))
       if ( store.get('contact_name') && store.get('contact_mobile') ){
+        if ( store.get('contact_name') === 'null' || store.get('contact_name') === 'undefined') {
+          this.contact_name = '请输入您的称呼'
+        }
+        if ( store.get('contact_mobile') === 'null' || store.get('contact_mobile') === 'undefined') {
+          this.contact_mobile = '请输入您的手机号'
+        }
         this.contact_name = store.get('contact_name')
         this.contact_mobile = store.get('contact_mobile')
       }
@@ -38,23 +45,36 @@
     methods: {
       handleClick () {
         var _this = this
-        if (this.contact_name!==''&&this.contact_mobile!==""){
+        if ( _this.contact_name!==''&& _this.contact_mobile!==""){
+          if ( !(/^1[34578]\d{9}$/.test(_this.contact_mobile)) ) {
+            MessageBox('提示', '请输入正确的手机号')
+            return
+          }
           store.set('contact_name',_this.contact_name)
           store.set('contact_mobile',_this.contact_mobile)
           var reqData = {
             user_id: store.get("user_id"),
-            store_id: store.get("store_id"),
-            license_plate: store.get('license_plate'),
+            // store_id: store.get("store_id"),
+            // license_plate: store.get('license_plate'),
             contact_name: _this.contact_name,
             contact_mobile: _this.contact_mobile,
-            goods_list: store.get("goods_list")
+            // goods_list: store.get("goods_list")
           }
           Indicator.open()
-          submitOrder(reqData).then(function(rep){
+          completeUserInfo(reqData).then(function(rep){
             Indicator.close()
-            _this.$router.push('/pay')
-            _this.order_id =rep.data.data.order_id
-            store.set('order_id', _this.order_id)
+            if (rep.data.code == 1 ) {
+              MessageBox({
+                title: '提示',
+                message: '提交失败'
+              })
+              return
+           
+            } else {
+             
+              _this.order_id = store.get('order_id')
+              _this.$router.push({ path:'pay', query: {order_id: _this.order_id}})
+              }
             })
             .catch(function(err){
               Indicator.close()
