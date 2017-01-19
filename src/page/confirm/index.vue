@@ -59,20 +59,29 @@
       return {
         contact_phone: 0,
         slide: [],
-        detail: {}
+        detail: {},
+        lng: 0,
+        lat: 0
       }
     },
     created () {
       var _this = this
       var order_id = _this.$route.query.order_id
       var store_id = _this.$route.query.store_id
+      
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
       })
       getStoreInfo(store_id).then(function(rep){
         _this.contact_phone = rep.data.data.contact_phone
+        // _this.lng = rep.data.data.longitude
+        // _this.lat = rep.data.data.latitude
+        var gps_lng  = rep.data.data.longitude
+        var gps_lat = rep.data.data.latitude
+
         _this.slide = rep.data.data.picture.split(',')
       })
+              // axios.get('http://www.baidu.com')
   
     },
     methods: {
@@ -81,12 +90,12 @@
         var reqData = {
           order_id: this.$route.query.order_id
         }
-        submitOrderConfirm(reqData)
-          .then(function(rep){
-            console.log(rep)
-            MessageBox.confirm('是否确认已领取到货物？')
-              .then( () => {
-                
+        MessageBox.confirm('是否确认已领取到货物？')
+          .then( () => {
+            submitOrderConfirm(reqData)
+              .then(function(rep){
+                console.log(rep)
+                window.history.replaceState({}, "","/#/storeList");
                 _this.$router.push({
                   path: 'rate',
                   query: {
@@ -113,8 +122,9 @@
       }
     },
     computed: {
-      navUrl (){
-        return 'appcall://mapnav?endname="test"&endlng=106.553029&endlat=29.567469'
+      navUrl (lng,lat){
+        var _this = this
+        return 'appcall://mapnav?endname="test"&endlng="+_ this.lng + "&endlat=" + _this.lat'
       }
     },
     filters: {

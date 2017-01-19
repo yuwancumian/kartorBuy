@@ -12,6 +12,7 @@
     v-for="step in opt" 
     :title="step.description"
     :status = "step.status" 
+    :pay = "pay"
     :label="step.create_time">
   </ot-step>
     <!-- <ot-step title="已完成" label="8月22日 20:51"  done desc="这里是信息的描述 "> -->
@@ -152,7 +153,7 @@ export default {
           create_time: ''
         }
       ],
- 
+      pay: false,
       slide: []
     }
   },
@@ -168,6 +169,9 @@ export default {
     // _this.opt = _this.opts.reverse()
     getOrderStatus(this.$route.query.order_id).then(function(rep){
       _this.opt = rep.data.data.opts.reverse()
+      if(_this.opt.length >= 3){
+        _this.pay = true;
+      }
     })
   },
   methods: {

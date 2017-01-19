@@ -2,7 +2,8 @@
   <div class="pay">
     <!--<timer :left_time="left_time"></timer>-->
     <div class="tips">
-      支付剩余时间 {{left_time |toMinite }} 
+      <!--支付剩余时间 {{left_time |toMinite }} -->
+      订单有效时间15分钟，请尽快支付
     </div>
     <!--<div class="ot-panel" style="margin-top: -1px">
       <pay-mode v-model="selected"></pay-mode>
@@ -21,7 +22,7 @@
           </tr>
         </table>
       </div>
-      <div class="pay-info">
+      <div class="pay-info" v-if="detail.discount!= 1">
         <span class="icon-discount"></span>全场 <span class="prom">{{detail.discount*10}}</span> 折   
         <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
       </div>

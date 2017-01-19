@@ -8,7 +8,12 @@ Object.assign(axios.defaults, defaults)
 
 //获取用户信息
 export const getUserInfo = () => {
-  return axios.post('./user/info')
+  return axios.post('/user/info')
+}
+
+//是否有确认订单
+export const getOrderNotend = (id) => {
+  return axios.get(`/order/notend?user_id=${id}`)
 }
 
 //商店列表
@@ -28,7 +33,7 @@ export const getStoreNotice = (id) => {
 
 //进入店铺，商品列表
 export const getGoodsList = (id,page) => {
-  return axios.get('/goods/list?store_id='+id+'&page=' + page + '&size=6')
+  return axios.get('/goods/list?store_id='+id+'&page=' + page + '&size=15')
 }
 //商品详情
 export const getGoodsInfo = (id) => {

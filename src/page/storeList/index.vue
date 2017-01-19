@@ -12,19 +12,25 @@
 </template>
 
 <script>
-  import { getShopList, getCarPosition, getUserInfo } from '../../libs/api.js'
+  import { getShopList, getCarPosition, getUserInfo, getOrderNotend } from '../../libs/api.js'
 
   export default {
     data(){
       return {
         shops:[
-        ]
+        ],
+        user_id: 0,
+        license_plate: '',
+        contact_name: '',
+        contact_mobile: 0,
+        open_car_id: 0
       }
     
     },
     created(){
       var _this = this
-       getShopList()
+
+      getShopList()
         .then(function(rep){
           _this.shops = rep.data.data
           console.log(_this.shops)
@@ -32,16 +38,16 @@
           var point = new BMap.Point(106.539594,29.579195);
           map.centerAndZoom(point, 13);
           map.disableDoubleClickZoom(true);
-          var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink.png',new BMap.Size(37,71),{//是引用图标的名字以及大小，注意大小要一样
+          var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink1.png',new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
           })
-          var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food.png', new BMap.Size(48,56),{
+          var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food1.png', new BMap.Size(28,33),{
             anchor: new BMap.Size(10, 30) 
           })
-          var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga.png', new BMap.Size(35,59),{
+          var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga1.png', new BMap.Size(28,47),{
             anchor: new BMap.Size(10, 30) 
           })
-          var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop.png', new BMap.Size(57,47),{
+          var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop1.png', new BMap.Size(50,41),{
             anchor: new BMap.Size(10, 30) 
           })
           for( var i = 0; i < _this.shops.length; i ++){
@@ -69,12 +75,17 @@
           }
         })
       getUserInfo().then(function(rep){
-         _this.user_id = rep.data.data.user_id
-         _this.license_plate = rep.data.data.license_plate
-         _this.contact_name = rep.data.data.real_name
-         _this.contact_mobile = rep.data.data.contact_mobile
+        _this.user_id = rep.data.data.user_id
+        // _this.user_id = 42
+        _this.license_plate = rep.data.data.license_plate
+        _this.contact_name = rep.data.data.real_name
+        _this.contact_mobile = rep.data.data.contact_mobile
+        _this.open_car_id = rep.data.data.open_car_id
+        
         store.set('user_id',_this.user_id)
-        store.set('license_plate',_this.license_plate)
+        if ( _this.license_plate ) {
+          store.set('license_plate',_this.license_plate)
+        } 
         if (_this.contact_name ) {
           store.set('contact_name', _this.contact_name)
         }
@@ -82,9 +93,14 @@
           store.set('contact_mobile', _this.contact_mobile)
         }
       })
-      getCarPosition('f157nnn235ff69c4d6f8ed5c475497b472cHHHHH')
+      getOrderNotend(store.get('user_id')).then(function(rep){
+         if (rep.data.data.length > 0) {
+           _this.$router.push({ path: 'confirm', query: { order_id: rep.data.data[0]['order_id'] }})
+         }
+      })
+      getCarPosition(_this.open_car_id)
         .then(function(rep){
-          store.set('position',rep.data.data)
+          store.set('car_position',rep.data.data)
           //console.log(store.get('position'))
         })
         .catch(function(error){

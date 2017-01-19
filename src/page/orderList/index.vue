@@ -120,7 +120,7 @@
           getOrderList(id,_this.page).then(function(rep){
             var newOrders = rep.data.data    
             _this.orders.push(...newOrders)  
-            if ( newOrders.length < 6 ) {
+            if ( newOrders.length < 10 ) {
               _this.loading = true
               return false 
             }      

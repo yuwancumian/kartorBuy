@@ -87,17 +87,17 @@
       },
       submitRate () {
         var _this =  this
-
+        var set_star = document.getElementsByClassName('set-star')[0]
         var reqData = {
           user_id: store.get('user_id'),
           store_id: _this.$route.query.store_id,
           order_id: _this.$route.query.order_id,
-          score: document.getElementsByClassName('active').length - 1,
+          score: set_star.getElementsByClassName('active').length - 1,
           comment: _this.comment
         }
 
         if (reqData.score == 0 ) {
-          MessageBox('提示', '亲，您还未做出评价')
+          MessageBox('提示', '亲，您还未对商家服务做出评价')
           return
         }
         submitStoreGrade ( reqData ).then(function(rep){

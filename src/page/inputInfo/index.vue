@@ -30,7 +30,6 @@
       }
     },
     created (){
-      alert(store.get('contact_name'))
       if ( store.get('contact_name') && store.get('contact_mobile') ){
         if ( store.get('contact_name') === 'null' || store.get('contact_name') === 'undefined') {
           this.contact_name = '请输入您的称呼'

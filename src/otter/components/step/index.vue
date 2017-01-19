@@ -9,6 +9,7 @@
       <p v-if="status == 4">请尽快到达指定取货点</p>
       <p v-if="status == 5">请尽快到达指定取货点</p>
       <p v-if="status == 9"> 商家有24小时处理您的退款申请，商家逾期不处理，默认视为同意退款</p>
+      <p v-if="status == 7 && pay">预计1个工作日内将钱款退回到银行账户。如有疑问，请致电驾图购客服4008054288</p>
       <p v-if="status == 10">退款已发往你的银行账户，等待银行入账。如有疑问，请致电驾图购客服4008054288</p>
     </div>
     <div class="ot-step-tail"></div>
@@ -21,7 +22,7 @@
     components:{
       OtCell
     },
-    props: ['title', 'label', 'desc', 'status'],
+    props: ['title', 'label', 'desc', 'status', 'pay'],
     data (){
       return {
         isDesc: true

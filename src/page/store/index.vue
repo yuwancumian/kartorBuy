@@ -174,9 +174,7 @@
       },
       loadMore(){
         var _this = this
-        Indicator.open({
-          spinnerType: 'fading-circle'
-        })
+        Indicator.open()
         _this.loading = true
         var id = _this.$route.params.id
         setTimeout(() => {
@@ -186,7 +184,7 @@
           getGoodsList(id,_this.page).then(function(rep){
             var newList = rep.data.data    
             _this.products.push(...newList)  
-            if ( newList.length < 6 ) {
+            if ( newList.length < 15 ) {
               _this.loading = true
               return false 
             }      
@@ -220,6 +218,7 @@
         _this.is_onsale = rep.data.data.is_onsale
         _this.is_two_sides = rep.data.data.is_two_sides
         _this.slide = rep.data.data.picture.split(',').reverse()
+        store.set('is_onsale', _this.is_onsale)
         console.log('created' +_this.store_name)
       })
       getStoreNotice(id).then(function(rep){

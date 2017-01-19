@@ -24,7 +24,8 @@
           </li>
           <li>¥ {{goods_info.price}}</li>
         </ul>
-        <counter v-on:addPrice="addP" v-on:minusPrice="minusP" > </counter>
+        <counter v-on:addPrice="addP" v-on:minusPrice="minusP" v-if="is_onsale==1"> </counter>
+        <span class="icon-add-gray" v-else></span>
         <div class="icon-return" v-if="goods_info.is_refundable == 2"></div>
       </div>
     </div>
@@ -81,15 +82,16 @@ export default {
     return {
       is_active: false,
       goods_info:{
-        id: 12,
-        name: '香菇粉丝素菜',
-        price: 22.3,
-        saled: 11,
-        dislike_count: 3,
-        like_count: 3,
+        id: 0,
+        name: '',
+        price: 0,
+        saled: 0,
+        dislike_count: 0,
+        like_count: 0,
         no_return: true,
         picture: ''
       },
+      is_onsale: '',
       total_price: 0.00,
       goods_num: 0,
       goods_list: [],
@@ -148,6 +150,7 @@ export default {
     var _this = this
     _this.goods_list = []
     _this.discount = store.get('discount')
+    _this.is_onsale = store.get('is_onsale')
     console.log()
     getGoodsInfo(this.$route.params.id)
       .then(function(rep){
@@ -250,6 +253,11 @@ export default {
       top: 0px;
       right: 10px;
     }
+    .icon-add-gray{
+      position: absolute;
+      right: 10px;
+      top: -8px;
+    }
     .counter{
       top: auto;
       bottom: 3px;
@@ -298,14 +306,16 @@ export default {
   }
   .item-info{
     margin: 0;
-    padding-left: 10px;
     line-height: 20px;
     min-height: 60px;
+
     li:nth-of-type(1){
+      color: #333;
       font-size: 16px;
     }
     li:nth-of-type(2){
       font-size: 12px;
+      margin: 6px 0;
       color: #666;
     }
     :nth-child(3){
