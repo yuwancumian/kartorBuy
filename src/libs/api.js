@@ -47,7 +47,7 @@ export const submitOrder = (data) => {
 
 //订单列表
 export const getOrderList = (id, page) => {
-  return axios.get('/order/list?&status=0&user_id=' + id + '&page=' + page + '&size=6' )
+  return axios.get('/order/list?&status=0&user_id=' + id + '&page=' + page + '&size=15' )
 }
 
 //订单状态
