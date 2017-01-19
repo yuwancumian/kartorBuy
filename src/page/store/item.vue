@@ -11,8 +11,10 @@
         <li>
             {{product.name}}
         </li>
-        <li>月销量 {{product.quantity||0}} 
-           <span v-if="product.like_count!=0&&(product.like_count+product.dislike_count)>0"> 好评度 {{Math.floor(product.like_count/(product.like_count+product.dislike_count)*100)}}%</span></li>
+        <li>月销量 {{product.quantity||0}}
+           <span v-if="product.like_count!=0&&(product.like_count+product.dislike_count)>0"> 好评度 {{Math.floor(product.like_count/(product.like_count+product.dislike_count)*100)}}%</span>
+           <span v-if="product.like_count==0&&(product.like_count+product.dislike_count)>0"> 好评度0%</span>
+        </li>
         <li>¥ {{product.price}}</li>
       </ul>
       </router-link>
@@ -24,7 +26,7 @@
       <span class="icon-add-gray"></span>
     </div>
     <div class="icon-return" v-if="product.is_refundable == 2">
-    </div> 
+    </div>
   </div>
 </template>
 
@@ -47,7 +49,7 @@
         var _this = this
         this.itemPrice = (counter * this.product.price).toFixed(2)
         this.$emit('addPrice',this.product.price)
-        
+
         // 缓存购物车信息,存入父组件goods_list
         this.goods_num += 1
         if (this.goods_num === 1 ) {
@@ -56,7 +58,7 @@
             goods_num: this.goods_num
           })
           console.log('数组长度:' +this.$parent.goods_list.length)
-        } 
+        }
         if (this.goods_num > 1) {
           function modifyThisItem (el){
             if ( el.goods_id === _this.product.goods_id) {
@@ -77,9 +79,9 @@
         if ( this.goods_num === 0 ) {
           function removeThisItem (el,index) {
             if ( el.goods_id === _this.product.goods_id) {
-              _this.$parent.goods_list.splice(index,1) 
+              _this.$parent.goods_list.splice(index,1)
             }
-          } 
+          }
           this.$parent.goods_list.forEach(removeThisItem)
         } else {
           function selectThisItem (el){
