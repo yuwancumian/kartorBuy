@@ -14,12 +14,12 @@
       <ul>
         <li v-for = "goods in goods_list">
           <span>{{goods.goods_name}}</span>
-            <up-down 
-              @handleUp = "submitRateUp(goods.goods_id)" 
-              @handleDown ="submitRateDown(goods.goods_id)"> 
+            <up-down
+              @handleUp = "submitRateUp(goods.goods_id)"
+              @handleDown ="submitRateDown(goods.goods_id)">
             </up-down>
         </li>
-        
+
       </ul>
     </div>
     <div class="comm">
@@ -46,15 +46,17 @@
         store_icon:'',
         store_name:'',
         goods_list: [],
-        comment: ''
+        comment: '',
+        goods_like:[],
+        goods_unlike:[]
       }
     },
     created () {
       var _this = this
       getOrderDetail(_this.$route.query.order_id).then(function(rep){
-        _this.goods_list = rep.data.data.goods 
+        _this.goods_list = rep.data.data.goods
         console.log(rep.data.data.goods)
-      }) 
+      })
       getStoreInfo(_this.$route.query.store_id).then(function(rep){
         _this.store_icon = rep.data.data.store_icon
         _this.store_name = rep.data.data.store_name
@@ -63,27 +65,19 @@
     methods:{
       submitRateUp ( id ) {
         var _this = this
-        var reqData = {
-          user_id: store.get('user_id'),
-          store_id: _this.$route.query.store_id,
-          order_id: _this.$route.query.order_id,
-          goods_id: id
+        if(_this.goods_like.indexOf(id)>-1){
+          _this.goods_like.splice(_this.goods_like.indexOf(2),1)
+          return
         }
-        submitGoodsLike( reqData ).then(function(rep){
-          console.log(rep)
-        })  
+        _this.goods_like.push(id)
       },
       submitRateDown ( id ) {
         var _this = this
-        var reqData = {
-          user_id: store.get('user_id'),
-          store_id: _this.$route.query.store_id,
-          order_id: _this.$route.query.order_id,
-          goods_id: id
+        if(_this.goods_unlike.indexOf(id)>-1){
+          _this.goods_unlike.splice( _this.goods_unlike.indexOf(2),1)
+          return
         }
-        submitGoodsUnlike( reqData ).then(function(rep){
-          console.log(rep)
-        })
+        _this.goods_unlike.push(id);
       },
       submitRate () {
         var _this =  this
@@ -93,7 +87,9 @@
           store_id: _this.$route.query.store_id,
           order_id: _this.$route.query.order_id,
           score: set_star.getElementsByClassName('active').length - 1,
-          comment: _this.comment
+          comment: _this.comment,
+          goods_like: _this.goods_like,
+          goods_unlike: _this.goods_unlike
         }
 
         if (reqData.score == 0 ) {
@@ -101,15 +97,15 @@
           return
         }
         submitStoreGrade ( reqData ).then(function(rep){
-          console.log(rep) 
+          console.log(rep)
           MessageBox.confirm('评论成功！').then(() => {
             _this.$router.push('orderList')
           })
-        }) 
+        })
       }
 
     }
-     
+
   }
 </script>
 

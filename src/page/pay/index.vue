@@ -23,11 +23,11 @@
         </table>
       </div>
       <div class="pay-info" v-if="detail.discount!= 1">
-        <span class="icon-discount"></span>全场 <span class="prom">{{detail.discount*10}}</span> 折   
+        <span class="icon-discount"></span>全场 <span class="prom">{{detail.discount*10}}</span> 折
         <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
       </div>
       <div class="pay-info">
-        <span style="color: #999">订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span> 
+        <span style="color: #999">订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span>
           </span>
         <div>
           待支付 <span class="pay-price">¥{{detail.price}}</span>
@@ -60,17 +60,17 @@
         <input type="text" placeholder="口味、偏好等" v-model="order_remark" />
       </div>
     </div>
-    
+
     <div class="ot-panel">
       <div class="container">
       <div>注：请尽量在下单后 6 小时内到取货地点取货，12 小时后如未确认收货，系统将自动确认收货</div>
       <span class="pay-ticket">商家不支持开发票</span>
       </div>
     </div>
-    
+
     <app-title title="在线支付"></app-title>
     <footer>
-      <div>待支付 <span> ¥ {{detail.price}}</span></div> 
+      <div>待支付 <span> ¥ {{detail.price}}</span></div>
       <a  class="router-link-active" @click.prevent="handleClick">确定支付</a>
       </footer>
   </div>
@@ -111,6 +111,7 @@
       _this.contact_mobile = store.get('contact_mobile')
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
+        _this.order_remark = rep.data.data.remark;
         //console.log(_this.detail.create_time)
       })
     },
@@ -125,15 +126,19 @@
           contact_mobile: _this.contact_mobile,
           remark: _this.order_remark
         }
+
+        store.set('contact_name',_this.contact_name);
+        store.set('contact_mobile',_this.contact_mobile);
+
         submitOrderRemark(remark_data).then(function(rep){
           console.log(rep.data.data)
         })
         var req_data = {
           order_id: order_id
         }
-        
+
         submitPay(req_data).then(function(rep){
-          
+
             if (rep.data.code == 1) {
               MessageBox({
                 title: '提示',
@@ -153,7 +158,7 @@
               }).then( () => {
                  _this.$router.push({
                   name: 'store', params: { id: _this.detail.store_id }
-                 }) 
+                 })
               })
               return
             } else if (rep.data.code == 4) {
@@ -179,7 +184,7 @@
             } else {
 
               _this.pay_detail = JSON.parse(rep.data.data)
-              
+
               var pay_url = _this.pay_detail.data.payUrl
               window.location.href = pay_url
             }
@@ -198,12 +203,12 @@
         var _this = this
         _this.update_date = new Date(('' + _this.detail.create_time).replace(/-/g, "/") || 0)
         var now_date = new Date()
-  
+
         if ( !_this.detail.create_time  ) {
-          return 
+          return
         }
         var end_date = new Date(_this.update_date)
-        
+
         end_date.setMinutes(_this.update_date.getMinutes()+14)
         var a = Date.parse(now_date)
         var b = Date.parse(end_date)
