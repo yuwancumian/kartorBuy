@@ -50,6 +50,7 @@
   import { Swipe, SwipeItem, MessageBox } from 'mint-ui'
   import { getOrderDetail, getStoreInfo } from '../../libs/api.js'
   import { submitOrderConfirm } from '../../libs/api.js'
+  import { transMap } from '../../libs/bdMap.js'
 
   export default {
     components: {
@@ -73,14 +74,16 @@
         _this.detail = rep.data.data
       })
       getStoreInfo(store_id).then(function(rep){
+        console.log(rep.data.data.longitude)
         _this.contact_phone = rep.data.data.contact_phone
-        // _this.lng = rep.data.data.longitude
-        // _this.lat = rep.data.data.latitude
-        var gps_lng  = rep.data.data.longitude
-        var gps_lat = rep.data.data.latitude
-
+        _this.lng = rep.data.data.longitude
+        console.log(_this.lng)
+        _this.lat = rep.data.data.latitude
         _this.slide = rep.data.data.picture.split(',')
+        transMap(_this.lng, _this.lat)
       })
+      
+
               // axios.get('http://www.baidu.com')
   
     },

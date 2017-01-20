@@ -25,7 +25,8 @@
         </div>
       </div>
     </div>
-    <div class="swipe" v-if="products.length > 0">
+    <div class="content">
+    <div class="swipe" v-if="products.length > 0 && slide.length> 0 ">
       <mt-swipe :auto="4000">
         <mt-swipe-item v-if="slide[0]">
           <img :src="slide[0]" alt="">
@@ -68,7 +69,8 @@
         <br>
         <br>
         亲，商家暂无商品出售!
-      </div>
+    </div>
+    </div>
     <app-footer 
       title="去结算" 
       :total_price="total_price"
@@ -198,17 +200,17 @@
 
 
     created(){
-      var _this = this
-      var id = _this.$route.params.id
-      var page = _this.page
+      const _this = this
+      const id = _this.$route.params.id
+      const page = _this.page
+
       Indicator.open()
-     
       this.goods_list = []
-       if ( store.get('contact_name') && store.get('contact_mobile') ) {
+      if ( store.get('contact_name') && store.get('contact_mobile') ) {
            _this.url = '/pay'
-        } else {
+      } else {
         _this.url = '/inputInfo'
-        }
+      }
       getStoreInfo(id).then(function(rep){
         _this.store_name = rep.data.data.store_name
         _this.store_icon = rep.data.data.store_icon
@@ -234,6 +236,7 @@
         Indicator.close()
         _this.products = rep.data.data        
       })
+    
       // $(window).on('scroll', function(){
       //   var y_scroll_pos = window.pageYOffset;
       //   var scroll_pos_test = 100;
@@ -250,7 +253,16 @@
       //   }
       // })
     },
-    
+    mounted (){
+      setTimeout( function () {
+          var shop_header = document.querySelector('.shop-header')
+          var content = document.querySelector('.content') 
+          var header_height = shop_header.offsetHeight
+          shop_header.style.position = 'fixed'
+          content.style.marginTop = header_height + 'px'
+      },200)
+    },
+
     beforeRouteLeave ( to, from, next ) {
       var _this = this
       // if ( to.path === "/inputInfo" ) {
