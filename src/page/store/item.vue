@@ -11,7 +11,7 @@
         <li>
             {{product.name}}
         </li>
-        <li>月销量 {{product.quantity||0}}
+        <li>销量 {{product.quantity||0}}
            <span v-if="product.like_count!=0&&(product.like_count+product.dislike_count)>0"> 好评度 {{Math.floor(product.like_count/(product.like_count+product.dislike_count)*100)}}%</span>
            <span v-if="product.like_count==0&&(product.like_count+product.dislike_count)>0"> 好评度0%</span>
         </li>
