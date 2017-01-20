@@ -36,7 +36,7 @@
           console.log(_this.shops)
           var map = new BMap.Map("allmap");
           var point = new BMap.Point(106.539594,29.579195);
-          map.centerAndZoom(point, 13);
+          map.centerAndZoom(point, 12);
           map.disableDoubleClickZoom(true);
           var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink1.png',new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
