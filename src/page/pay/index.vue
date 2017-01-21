@@ -190,9 +190,8 @@
             })
               return
             }else {
-
+              window.history.replaceState({},'驾图购',window.location.hash+ '&' + new Date().getTime())
               _this.pay_detail = JSON.parse(rep.data.data)
-
               var pay_url = _this.pay_detail.data.payUrl
               window.location.href = pay_url
             }
