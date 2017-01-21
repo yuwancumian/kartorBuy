@@ -61,26 +61,32 @@
         contact_phone: 0,
         slide: [],
         detail: {},
-        lng: 0,
+        lon: 0,
         lat: 0
       }
     },
     created () {
       var _this = this
+      const bdkey = 'heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ'
       var order_id = _this.$route.query.order_id
       var store_id = _this.$route.query.store_id
       
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
       })
+
       getStoreInfo(store_id).then(function(rep){
         console.log(rep.data.data.longitude)
         _this.contact_phone = rep.data.data.contact_phone
-        _this.lng = rep.data.data.longitude
-        console.log(_this.lng)
-        _this.lat = rep.data.data.latitude
+        var lon = rep.data.data.longitude
+        var lat = rep.data.data.latitude
         _this.slide = rep.data.data.picture.split(',')
-        transMap(_this.lng, _this.lat)
+        BMap.Convertor.translate( lon, lat,  bdkey, function (point, status, message) {
+          if(status) return console.log(message || "转换坐标出错:"+status, true);
+          _this.lon = point[0]['lng']
+          _this.lat = point[0]['lat']
+          console.log(_this.lat)
+        });
       })
       
 
@@ -125,9 +131,9 @@
       }
     },
     computed: {
-      navUrl (lng,lat){
+      navUrl (lon,lat){
         var _this = this
-        return 'appcall://mapnav?endname="test"&endlng="+_ this.lng + "&endlat=" + _this.lat'
+        return 'appcall://mapnav?endname=test&endlng='+ _this.lon + '&endlat=' + _this.lat
       }
     },
     filters: {

@@ -98,7 +98,8 @@
         }
         submitStoreGrade ( reqData ).then(function(rep){
           console.log(rep)
-          MessageBox.confirm('评论成功！').then(() => {
+          window.history.replaceState({}, "","/#/storeList");
+          MessageBox.alert('评论成功！').then(() => {
             _this.$router.push('orderList')
           })
         })
