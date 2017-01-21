@@ -190,7 +190,7 @@
             })
               return
             }else {
-              window.history.replaceState({},'驾图购',window.location.hash+ '&' + new Date().getTime())
+              window.history.replaceState({},'驾图购','/#/pay?order_id='+ order_id + '&' + new Date().getTime())
               _this.pay_detail = JSON.parse(rep.data.data)
               var pay_url = _this.pay_detail.data.payUrl
               window.location.href = pay_url
