@@ -181,7 +181,15 @@
                 message: '抱歉，您有未结束订单'
               })
               return
-            } else {
+            } else if(rep.data.code == 7){
+              MessageBox({
+                title: '提示',
+                message: '抱歉，您的订单已过期'
+              }).then( () => {
+                _this.$router.push('orderList')
+            })
+              return
+            }else {
 
               _this.pay_detail = JSON.parse(rep.data.data)
 

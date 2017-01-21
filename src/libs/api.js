@@ -57,7 +57,7 @@ export const getOrderStatus = (id) => {
 
 //订单详情
 export const getOrderDetail = (id) => {
-  return axios.get(`/order/detail?order_id=${id}`)
+  return axios.get(`/order/detail?order_id=${id}&time=${new Date().getTime()}`)
 }
 
 //取消订单
@@ -109,5 +109,5 @@ export const getCarPosition = (car_id) => {
     params: {
       open_car_id: car_id
     }
-  }) 
+  })
 }
