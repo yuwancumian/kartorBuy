@@ -2,6 +2,7 @@
 const baseUrl = 'http://api.map.baidu.com/geoconv/v1/?'
 
 function transMap (lng, lat ) {
+  var ng, at
   $.ajax({
     url: baseUrl + 
     'ak=heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ' +
@@ -15,6 +16,7 @@ function transMap (lng, lat ) {
         console.log(data)
     }
   })    
+  return {ng, at }
 }
 
 export { transMap }

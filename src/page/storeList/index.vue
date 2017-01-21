@@ -92,13 +92,7 @@
         if ( _this.contact_mobile) {
           store.set('contact_mobile', _this.contact_mobile)
         }
-      })
-      getOrderNotend(store.get('user_id')).then(function(rep){
-         if (rep.data.data.length > 0) {
-           _this.$router.push({ path: 'confirm', query: { order_id: rep.data.data[0]['order_id'] }})
-         }
-      })
-      getCarPosition(_this.open_car_id)
+        getCarPosition(_this.open_car_id)
         .then(function(rep){
           store.set('car_position',rep.data.data)
           //console.log(store.get('position'))
@@ -106,6 +100,16 @@
         .catch(function(error){
           console.log(error)
         })
+      })
+      getOrderNotend(store.get('user_id')).then(function(rep){
+         if (rep.data.data.length > 0) {
+           _this.$router.push({ 
+             path: 'confirm', 
+             query: { order_id: rep.data.data[0]['order_id'], store_id: rep.data.data[0]['store_id'] }
+            })
+         }
+      })
+      
     },
     mounted(){
       var _this = this
