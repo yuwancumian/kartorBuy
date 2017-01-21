@@ -25,7 +25,7 @@
         contact_mobile: 0,
         open_car_id: 0
       }
-    
+
     },
     created(){
       var _this = this
@@ -42,19 +42,19 @@
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
           })
           var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food1.png', new BMap.Size(28,33),{
-            anchor: new BMap.Size(10, 30) 
+            anchor: new BMap.Size(10, 30)
           })
           var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga1.png', new BMap.Size(28,47),{
-            anchor: new BMap.Size(10, 30) 
+            anchor: new BMap.Size(10, 30)
           })
           var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop1.png', new BMap.Size(50,41),{
-            anchor: new BMap.Size(10, 30) 
+            anchor: new BMap.Size(10, 30)
           })
           for( var i = 0; i < _this.shops.length; i ++){
-            var icon; 
+            var icon;
             if  (_this.shops[i].store_type == 1 ){
               icon = iconDrink;
-            } 
+            }
             if (_this.shops[i].store_type == 2){
               icon = iconFood;
             }
@@ -67,11 +67,11 @@
             var point = new BMap.Point(_this.shops[i].longitude,_this.shops[i].latitude)
             var mark = new BMap.Marker( point, {icon: icon})
             map.addOverlay(mark)
-            mark.href = _this.shops[i].store_id 
+            mark.href = _this.shops[i].store_id
             mark.addEventListener("click",function(){
               console.log(_this.$router)
               _this.$router.push( { name: 'store', params: { id: this.href } } )
-            }, false)  
+            }, false)
           }
         })
       getUserInfo().then(function(rep){
@@ -81,11 +81,11 @@
         _this.contact_name = rep.data.data.real_name
         _this.contact_mobile = rep.data.data.contact_mobile
         _this.open_car_id = rep.data.data.open_car_id
-        
+
         store.set('user_id',_this.user_id)
         if ( _this.license_plate ) {
           store.set('license_plate',_this.license_plate)
-        } 
+        }
         if (_this.contact_name ) {
           store.set('contact_name', _this.contact_name)
         }
@@ -109,8 +109,8 @@
     },
     mounted(){
       var _this = this
-      console.log(_this.shops) 
-      
+      console.log(_this.shops)
+
     }
   }
 </script>

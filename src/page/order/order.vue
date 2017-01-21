@@ -7,11 +7,11 @@
   <mt-tab-container v-model="selected">
   <mt-tab-container-item id="1" style="padding-bottom: 50px">
   <div class="ot-step-container">
-    
-  <ot-step 
-    v-for="step in opt" 
+
+  <ot-step
+    v-for="step in opt"
     :title="step.description"
-    :status = "step.status" 
+    :status = "step.status"
     :pay = "pay"
     :label="step.create_time">
   </ot-step>
@@ -19,19 +19,19 @@
     <!--   <span class="icon-done"></span> -->
     <!-- </ot-step> -->
   </div>
-    
+
     <div class="submit-btn" v-if="detail.status == 1">
       <p @click="submitCancel(detail.order_id)">取消订单</p>
       <router-link :to="{path: '/pay', query: {order_id: detail.order_id}}">
         <div>去支付</div>
       </router-link>
     </div>
-    
+
     <div class="submit-btn" v-if="detail.status == 2 ||detail.status == 3">
       <div @click = "submitCancel(detail.order_id)" class="filled">取消订单</div>
     </div>
 
-    <div class="submit-btn" 
+    <div class="submit-btn"
       v-if="detail.status == 4 || detail.status == 5"
       >
       <p @click="handleRefund" v-if="detail.is_refundable==1">退款</p>
@@ -49,7 +49,7 @@
     </div>
 
 
-          
+
   </mt-tab-container-item>
   <mt-tab-container-item id="2" style="background: #f5f5f5;min-height: 85vh">
     <div class="swipe">
@@ -81,7 +81,7 @@
             <td colspan="3" style="text-align: left">
               共 {{detail.total_num}} 件商品，实付
                 <span class="total-price">{{detail.total_price}}</span>
-              元 
+              元
             </td>
           </tfoot>
         </table>
@@ -98,7 +98,7 @@
           <td colspan="3" style="text-align: left">
             共 {{detail.total_num}} 件商品，实付
               <span class="total-price">{{detail.total_price}}</span>
-            元 
+            元
           </td>
         </tfoot>
       </table>
@@ -144,7 +144,7 @@ export default {
         order_code: '',
         license_plate: '',
         contact_mobile: '',
-        contact_name: '' 
+        contact_name: ''
       },
       opt: [
         {
@@ -163,7 +163,7 @@ export default {
       console.log(rep.data.data)
       _this.detail = rep.data.data
       _this.slide = _this.detail.picture.split(',')
-      store.set('slide', _this.slide)
+      store.set('slide', _this.slide);
       console.log(_this.contact_name)
     })
     // _this.opt = _this.opts.reverse()
@@ -176,18 +176,18 @@ export default {
   },
   methods: {
     handleRefund () {
-      this.$router.push({ 
-        path: '/refund', 
-        query: { 
+      this.$router.push({
+        path: '/refund',
+        query: {
           order_id: this.$route.query.order_id,
           store_id: this.$route.query.store_id
         }
       })
     },
     handleConfirm () {
-      this.$router.push({ 
-        path: '/confirm', 
-        query: { 
+      this.$router.push({
+        path: '/confirm',
+        query: {
           //store_id: this.$route.query.store_id,
           order_id: this.$route.query.order_id,
           store_id: this.$route.query.store_id
@@ -215,7 +215,7 @@ export default {
     payment (){
       if ( this.detail.payment == 1) {
         return '支付宝'
-      } 
+      }
       if ( this.detail.payment == 2 ) {
         return '微信'
       }
