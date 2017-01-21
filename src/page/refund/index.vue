@@ -173,6 +173,7 @@
             message: '您的退款申请已经提交成功，请耐心等待商家处理 <br> <div style="font-size: 14px;line-height: 20px"> 如有疑问，请致电驾图购客服 4008054288 </div>',
             confirmButtonText: '返回订单中心'
           }).then( () => {
+            window.history.replaceState({}, "","/#/storeList");
             _this.$router.push({
               path: '/orderList', 
               query: { 

@@ -12,6 +12,7 @@ Vue.filter('tofix', function(value){
 })
 Vue.use(VueRouter)
 Vue.use(Mint);
+
 //Vue.component('app-header',require('./components/header/header.vue'))
 Vue.component('app-title', Title)
 

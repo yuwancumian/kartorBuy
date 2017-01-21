@@ -10,7 +10,7 @@
       <rater></rater>
     </div>
     <div class="rate-list">
-      <h3>请选择您想推荐或吐槽的商品</h3>
+      <h3>请选择您想推荐或吐槽的商品 <timeago :since="time"></timeago> </h3>
       <ul>
         <li v-for = "goods in goods_list">
           <span>{{goods.goods_name}}</span>
@@ -48,7 +48,8 @@
         goods_list: [],
         comment: '',
         goods_like:[],
-        goods_unlike:[]
+        goods_unlike:[],
+        time: 2017-1-22
       }
     },
     created () {
@@ -100,7 +101,7 @@
           console.log(rep)
           window.history.replaceState({}, "","/#/storeList");
           MessageBox.alert('评论成功！').then(() => {
-            _this.$router.push('orderList')
+            _this.$router.push('storeList')
           })
         })
       }

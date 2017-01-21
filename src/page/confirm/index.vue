@@ -29,7 +29,7 @@
     </div> 
     <div class="submit-btn" @click="handleConfirm">
       <a>确定收货</a>
-      <span>5小时后系统将自动确认收货</span>
+      <span>  {{live_time}}系统将自动确认收货</span>
     </div>
     <div class="confirm-link">
       <div class="wrapper">
@@ -61,6 +61,7 @@
         contact_phone: 0,
         slide: [],
         detail: {},
+        live_time: 0,
         lon: 0,
         lat: 0
       }
@@ -71,8 +72,21 @@
       var order_id = _this.$route.query.order_id
       var store_id = _this.$route.query.store_id
       
+
+
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
+        if ( _this.detail.create_time  ) {
+          var create_date = new Date(('' + _this.detail.create_time).replace(/-/g, "/") || 0)
+
+          create_date.setHours(create_date.getHours() + 12)
+          var time = Date.parse(create_date)
+          var timeagoInstance = new timeago(null, time); // 在这里设置相对时间
+
+          console.log(time)
+          _this.live_time = timeagoInstance.format(time, 'zh_CN');
+        }
+
       })
 
       getStoreInfo(store_id).then(function(rep){
