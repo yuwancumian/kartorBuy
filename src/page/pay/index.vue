@@ -189,6 +189,14 @@
                 _this.$router.push('orderList')
             })
               return
+            } else if(rep.data.code == 8){
+              MessageBox({
+                title: '提示',
+                message: '您的订单已支付'
+              }).then( () => {
+                _this.$router.push('orderList')
+              })
+              return
             }else {
               window.history.replaceState({},'驾图购','/#/pay?order_id='+ order_id + '&' + new Date().getTime())
               _this.pay_detail = JSON.parse(rep.data.data)
