@@ -39,8 +39,8 @@
         </mt-swipe-item>
       </mt-swipe>
       <div class="road">
-        <span v-if="is_two_sides==1"> 支持道路对面取货</span>
-        <span v-else> 不支持道路对面取货</span>
+        <span v-if="is_two_sides==1"> 支持对面道路取货</span>
+        <span v-else> 不支持对面道路取货</span>
       </div>
     </div>
     <div class="shop-list" 

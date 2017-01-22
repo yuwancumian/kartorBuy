@@ -119,6 +119,11 @@
       handleClick () {
         var _this = this
         var order_id = _this.$route.query.order_id || store.get('order_id')
+        
+        if ( !(/^1[34578]\d{9}$/.test(_this.contact_mobile)) ) {
+            MessageBox('提示', '请输入正确的手机号')
+            return
+        }
         const remark_data = {
           order_id: order_id,
           user_id: store.get('user_id'),

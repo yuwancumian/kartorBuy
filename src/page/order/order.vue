@@ -103,7 +103,7 @@
         </tfoot>
       </table>
     </panel>-->
-    <panel title="备注" v-if="detail.remark && detail.remak != 'undefined'">
+    <panel title="备注" v-if="mark && mark != 'undefined'">
       {{detail.remark}}
     </panel>
     <panel title="其他信息">
@@ -154,7 +154,8 @@ export default {
         }
       ],
       pay: false,
-      slide: []
+      slide: [],
+      mark: ''
     }
   },
   created (){
@@ -162,6 +163,9 @@ export default {
     getOrderDetail(this.$route.query.order_id).then(function(rep){
       console.log(rep.data.data)
       _this.detail = rep.data.data
+      if ( _this.detail.remark ) {
+        _this.mark = _this.detail.remark.replace(/(^\s+)|(\s+$)/g, "");
+      }
       _this.slide = _this.detail.picture.split(',')
       store.set('slide', _this.slide);
       console.log(_this.contact_name)
