@@ -295,7 +295,7 @@
             if (rep.data.code == 2) {
               MessageBox({
                 title: '提示',
-                message: '抱歉，商品库存不足'
+                message: rep.data.message
               })
               return
             } else if (rep.data.code == 3) {

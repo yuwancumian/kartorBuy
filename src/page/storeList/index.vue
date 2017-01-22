@@ -49,16 +49,16 @@
           var point = new BMap.Point(106.539594,29.579195);
           map.centerAndZoom(point, 13);
           map.disableDoubleClickZoom(true);
-          var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink1.png',new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
+          var iconDrink = new BMap.Icon(require('../../assets/images/icon-drink.png'),new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
           })
-          var iconFood = new BMap.Icon('http://easier.b0.upaiyun.com/icon-food1.png', new BMap.Size(28,33),{
+          var iconFood = new BMap.Icon(require('../../assets/images/icon-food.png'), new BMap.Size(28,33),{
             anchor: new BMap.Size(10, 30)
           })
-          var iconSiga = new BMap.Icon('http://easier.b0.upaiyun.com/icon-siga1.png', new BMap.Size(28,47),{
+          var iconSiga = new BMap.Icon(require('../../assets/images/icon-siga.png'), new BMap.Size(28,47),{
             anchor: new BMap.Size(10, 30)
           })
-          var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop1.png', new BMap.Size(50,41),{
+          var iconShop = new BMap.Icon(require('../../assets/images/icon-shop.png'), new BMap.Size(50,41),{
             anchor: new BMap.Size(10, 30)
           })
           BMap.Convertor.trans(new_shops, bdkey, function (points, status, message) {
