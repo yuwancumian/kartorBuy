@@ -13,6 +13,8 @@
 
 <script>
   import { getShopList, getCarPosition, getUserInfo, getOrderNotend } from '../../libs/api.js'
+  import _ from 'lodash'
+
 
   export default {
     data(){
@@ -29,14 +31,23 @@
     },
     created(){
       var _this = this
-
+      const bdkey = 'heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ'
       getShopList()
         .then(function(rep){
           _this.shops = rep.data.data
-          console.log(_this.shops)
+
+
+          var new_shops = []
+          for( var i=0 ; i< _this.shops.length; i ++) {
+            new_shops.push({})
+            new_shops[i]['lat']= _.pick( _this.shops[i],"longitude","latitude" )['latitude']
+            new_shops[i]['lon']= _.pick( _this.shops[i],"longitude","latitude" )['longitude']
+          }
+          console.log(new_shops)
+          
           var map = new BMap.Map("allmap");
           var point = new BMap.Point(106.539594,29.579195);
-          map.centerAndZoom(point, 12);
+          map.centerAndZoom(point, 13);
           map.disableDoubleClickZoom(true);
           var iconDrink = new BMap.Icon('http://easier.b0.upaiyun.com/icon-drink1.png',new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
@@ -50,7 +61,10 @@
           var iconShop = new BMap.Icon('http://easier.b0.upaiyun.com/icon-shop1.png', new BMap.Size(50,41),{
             anchor: new BMap.Size(10, 30)
           })
-          for( var i = 0; i < _this.shops.length; i ++){
+          BMap.Convertor.trans(new_shops, bdkey, function (points, status, message) {
+            if(status) return console.log(message || "转换坐标出错:"+status, true);
+            console.log(points)
+            for( var i = 0; i < _this.shops.length; i ++){
             var icon;
             if  (_this.shops[i].store_type == 1 ){
               icon = iconDrink;
@@ -64,7 +78,8 @@
             if (_this.shops[i].store_type == 3){
               icon = iconShop
             }
-            var point = new BMap.Point(_this.shops[i].longitude,_this.shops[i].latitude)
+            // var point = new BMap.Point(_this.shops[i].longitude,_this.shops[i].latitude)
+            var point = new BMap.Point(points[i]['lng'],points[i]['lat'])
             var mark = new BMap.Marker( point, {icon: icon})
             map.addOverlay(mark)
             mark.href = _this.shops[i].store_id
@@ -73,6 +88,8 @@
               _this.$router.push( { name: 'store', params: { id: this.href } } )
             }, false)
           }
+          })
+          
         })
       getUserInfo().then(function(rep){
         _this.user_id = rep.data.data.user_id
@@ -102,8 +119,8 @@
         })
       })
       getOrderNotend(store.get('user_id')).then(function(rep){
-         if (rep.data.data.length > 0) {
-           _this.$router.push({ 
+        if (rep.data.data.length > 0) {
+          _this.$router.push({ 
              path: 'confirm', 
              query: { order_id: rep.data.data[0]['order_id'], store_id: rep.data.data[0]['store_id'] }
             })

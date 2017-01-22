@@ -29,7 +29,7 @@
     </div> 
     <div class="submit-btn" @click="handleConfirm">
       <a>确定收货</a>
-      <span>  {{live_time}}系统将自动确认收货</span>
+      <span>  {{live_time}} 系统将自动确认收货</span>
     </div>
     <div class="confirm-link">
       <div class="wrapper">

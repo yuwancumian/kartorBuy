@@ -52,8 +52,7 @@ function translate2(point,type,callback){
     25  coords个数非法，超过限制
 */
 function translate(lon, lat, key, callback) {
-    var coords = '',
-        callbackName = 'cbk_' + Math.round(Math.random() * 10000); //随机函数名
+    var callbackName = 'cbk_' + Math.round(Math.random() * 10000); //随机函数名
     // if(points.constructor !== Array) points = [points];
     // for(var index in points) {
     //     var point = points[index];
@@ -76,7 +75,30 @@ function translate(lon, lat, key, callback) {
     }
 }
 
+function trans (points, key, callback) {
+    var coords = '',
+        callbackName = 'cbk_' + Math.round(Math.random() * 10000);
+    for( var index = 0; index < points.length; index ++) {
+        var point = points[index];
+        coords += point.lon +',' + point.lat;
+        if(index < (points.length-1)) coords += ';';
+    }
+    var reqUrl = "http://api.map.baidu.com/geoconv/v1/?coords=" + coords + "&from=1&to=5&ak=" + key + "&callback=BMap.Convertor." + callbackName;
+    load_script(reqUrl);
+    BMap.Convertor[callbackName] = function(coordResult){
+        delete BMap.Convertor[callbackName]; //调用完需要删除改函数
+        if(coordResult.status !== 0) return callback && callback(null, coordResult.status, coordResult.message);
+        var ps = [];
+        for(var index in coordResult.result) {
+            ps.push(new BMap.Point(coordResult.result[index].x, coordResult.result[index].y));
+        }
+        if(ps.length == 1) ps = ps[0];
+        callback && callback(ps);
+    }
+}
+
 window.BMap = window.BMap || {};
 BMap.Convertor = {};
 BMap.Convertor.translate = translate;
+BMap.Convertor.trans = trans;
 })();
