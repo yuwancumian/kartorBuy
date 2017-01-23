@@ -68,7 +68,7 @@
       <br>
       亲，您暂无交易订单！
     </div>
-    
+    <app-title title="订单"> </app-title>
   </div>
 </template>
 

@@ -26,7 +26,7 @@
       <textarea placeholder="服务很好，商品很棒" v-model="comment"></textarea>
     </div>
     <div class="submit-btn" @click="submitRate">
-      <p>提 交</p>
+      <p>提 交</p>  
     </div>
 
   </div>

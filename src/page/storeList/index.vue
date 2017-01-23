@@ -1,5 +1,6 @@
 <template>
   <div class="location">
+    <app-title title="驾图购"> </app-title>
     <div id="allmap"></div>
     <router-link to="/">
       <div class="tips">
@@ -7,7 +8,7 @@
       </div>
     </router-link>
     <router-link to="orderList"><div class="icon-order"></div></router-link>
-    <app-title title="驾图购"> </app-title>
+    
   </div>
 </template>
 
@@ -127,11 +128,6 @@
          }
       })
       
-    },
-    mounted(){
-      var _this = this
-      console.log(_this.shops)
-
     }
   }
 </script>

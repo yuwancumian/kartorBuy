@@ -118,7 +118,7 @@
             submitOrderConfirm(reqData)
               .then(function(rep){
                 console.log(rep)
-                window.history.replaceState({}, "","/#/storeList");
+                window.history.replaceState({}, "","/#/storeList")
                 _this.$router.push({
                   path: 'rate',
                   query: {

@@ -122,8 +122,8 @@
       <list title="联系电话" :text="detail.contact_mobile"></list>
     </panel>
   </mt-tab-container-item>
-</mt-tab-container>
-
+  </mt-tab-container>
+  <app-title title="订单"> </app-title>
 </div>
 </template>
 
@@ -206,12 +206,15 @@ export default {
       })
     },
     submitCancel (id){
+      var _this = this
       var reqData = {
         order_id: id
       }
       MessageBox.confirm('确定执行此操作?').then( ()=> {
+       
         submitOrderCancel(reqData).then(function(rep){
-          window.location.reload()
+          window.history.replaceState({}, "","/#/storeList")
+          _this.$router.push('/orderList')
           console.log(rep)
         })
       });

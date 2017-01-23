@@ -18,7 +18,7 @@
           <tr v-for="product in detail.goods">
             <td>{{product.goods_name}}</td>
             <td>x {{product.quantity}}</td>
-            <td> {{product.price}} </td>
+            <td> ¥{{product.price}} </td>
           </tr>
         </table>
       </div>
@@ -27,7 +27,7 @@
         <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
       </div>
       <div class="pay-info">
-        <span style="color: #999">订单 ¥ <span class="total_price">{{detail.total_price}}</span>  优惠 ¥ <span class="cut">{{detail.discount_amount}}</span>
+        <span style="color: #999">订单 ¥<span class="total_price">{{detail.total_price}}</span>  优惠 ¥<span class="cut">{{detail.discount_amount}}</span>
           </span>
         <div>
           待支付 <span class="pay-price">¥{{detail.price}}</span>
@@ -69,8 +69,8 @@
     </div>
 
     <app-title title="在线支付"></app-title>
-    <footer>
-      <div>待支付 <span> ¥ {{detail.price}}</span></div>
+    <footer class="active">
+      <div>待支付 <span> ¥{{detail.price}}</span></div>
       <a  class="router-link-active" @click.prevent="handleClick">确定支付</a>
       </footer>
   </div>
