@@ -10,10 +10,10 @@
       <rater></rater>
     </div>
     <div class="rate-list">
-      <h3>请选择您想推荐或吐槽的商品 <timeago :since="time"></timeago> </h3>
+      <h3>请选择您想推荐或吐槽的商品 </h3>
       <ul>
         <li v-for = "goods in goods_list">
-          <span>{{goods.goods_name}}</span>
+          <div class="name">{{goods.goods_name}}</div>
             <up-down
               @handleUp = "submitRateUp(goods.goods_id)"
               @handleDown ="submitRateDown(goods.goods_id)">
