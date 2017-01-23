@@ -29,6 +29,8 @@
 	.ot-panel{
 		h3{
 			font-size: 16px;
+			color: #333;
+			margin: 13px 0;
 			img{
 				width: 24px;
 			}
@@ -43,27 +45,54 @@
 		display: inline-block;
 		margin-right: 6px;
 	}
-	.submit-btn{
-		p{
-			width: 30%;
-			float: left;
-			line-height: 48px;
-			height: 48px;
-			margin: 0;
-			background: #E91923;
+	.list{
+		.title{
+			height: 32px;
+			text-align: justify;
+  			text-justify: distribute-all-lines;/*ie6-8*/
+  			text-align-last: justify; /*ie9*/
+  			-moz-text-align-last: justify; /*ff*/
+  			-webkit-text-align-last: justify; 
+			text-align-last: justify;
+			vertical-align: middle;
+			overflow:hidden;
+			color: #777;
+		}
+		.title:after{
+			content: '';
+  			display: inline-block;
+  			width: 100%;
+  			hegiht: 0;
+  			line-height: 0;
 		}
 		div{
-			width: 70%;
-			float: right;
-			font-size: 14px;
-			line-height: 42px;
-		}
-		div.filled{
-			width: 100%;
-			font-size: 16px;
+			display: inline-block;
+			padding-left: 3px;
+			color: #333;
 		}
 	}
+	
 	
 }
 
 
+.submit-btn{
+	p{
+		width: 30%;
+		float: left;
+		line-height: 48px;
+		height: 48px;
+		margin: 0;
+		background: #E91923;
+	}
+	div{
+		width: 70%;
+		float: right;
+		font-size: 14px;
+		line-height: 42px;
+	}
+	div.filled{
+		width: 100%;
+		font-size: 16px;
+	}
+}

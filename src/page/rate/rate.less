@@ -60,7 +60,7 @@
         position: relative;
         display: flex;
         align-items: center;
-        justify-content: left;
+        justify-content: space-between;
 				.name{
           text-align: left;
 					display: inline-block;
@@ -79,8 +79,7 @@
     }
     .like{
       height: 22px;
-      position: absolute;
-      right: 0;
+      text-align: right;
       a:last-child{
         margin-left: 12px;
       }
@@ -97,6 +96,9 @@
       border-radius: 0;
       padding: 3px 5px;
       -webkit-appearance: none;
+    }
+    ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+      font-size: 16px;
     }
   }
   footer{

@@ -70,21 +70,28 @@
         <img :src="detail.store_icon" alt="">
         {{detail.store_name}}
       </h3>
-      <div class="container">
+      <div class="ot-panel-bd">
         <table class="table table-price">
           <tr v-for="good in detail.goods">
             <td>{{good.goods_name}}</td>
             <td>x {{good.quantity}}</td>
-            <td>{{good.price}}</td>
+            <td>¥ {{good.price}}</td>
           </tr>
-          <tfoot class="tfoot">
-            <td colspan="3" style="text-align: left">
-              共 {{detail.total_num}} 件商品，实付
-                <span class="total-price">{{detail.total_price}}</span>
-              元
-            </td>
-          </tfoot>
+        
         </table>
+      </div>
+      <div class="pay-info" v-if="detail.discount!= 1">
+        <span class="icon-discount"></span> 全场 <span class="prom">{{detail.discount*10}}</span> 折
+        <div> - ¥<span class="cut">{{detail.discount_amount}}</span></div>
+      </div>
+      <div class="pay-info">
+        <span style="color: #999"> 订单 ¥ {{detail.total_price}}
+          优惠 ¥{{detail.discount_amount}}
+        
+          </span>
+        <div>
+          支付 <span class="pay-price">¥{{detail.price}}</span>
+        </div>
       </div>
     </div>
     <!--<panel :title="detail.store_name">
@@ -110,8 +117,8 @@
       <list title="下单时间" :text="detail.create_time"> </list>
       <list title="订单号" :text="detail.order_code">  </list>
       <list title="支付方式" :text="payment" v-if="detail.payment"> </list>
-      <list title="车牌号" :text="detail.license_plate"></list>
-      <list title="联系人" :text="detail.contact_name"></list>
+      <list title="车 牌 号" :text="detail.license_plate"></list>
+      <list title="联 系 人" :text="detail.contact_name"></list>
       <list title="联系电话" :text="detail.contact_mobile"></list>
     </panel>
   </mt-tab-container-item>

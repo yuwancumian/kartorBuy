@@ -58,8 +58,13 @@
       :url="url" 
       :total_price="total_price"
       :class="{active: is_active}"
+      v-if="is_onsale<2"
       >
     </app-footer>
+     <div class="submit-btn" v-else>
+      商家休息中，暂不接单
+    </div>
+    <app-title title="驾图购"> </app-title>
 	</div>
 </template>
 
@@ -187,10 +192,11 @@ export default {
         MessageBox('提示', '请添加商品')
       } else {
         var reqData = {
+          user_id: store.get("user_id"),
           store_id: store.get("store_id"),
-          license_plate: "ysd20009",
-          contact_name: this.contact_name,
-          contact_mobile: this.contact_mobile,
+          license_plate: store.get('license_plate'),
+          contact_name: store.get("contact_name"),
+          contact_mobile: store.get("contact_mobile"),
           goods_list: this.goods_list
         }
 
@@ -220,7 +226,7 @@ export default {
             } else if (rep.data.code == 6) {
                MessageBox({
                 title: '提示',
-                message: '抱歉，您有未支付订单'
+                message: '抱歉，您有未结束订单'
               })
               return
             }
@@ -259,9 +265,11 @@ export default {
       top: -8px;
     }
     .counter{
-      top: auto;
-      bottom: 3px;
+      bottom: 0;
     }
+  }
+  .single-panel{
+    margin-top: 0;
   }
 	header{
 		.mint-swipe-item img{
@@ -290,6 +298,7 @@ export default {
   h4{
     margin: 6px 0;
     font-weight: normal;
+    color: #666;
   }
   .mt-progress-progress{
     background: @color-primary; 
@@ -315,13 +324,18 @@ export default {
     }
     li:nth-of-type(2){
       font-size: 12px;
-      margin: 6px 0;
+      margin: 4px 0 6px;
       color: #666;
     }
     :nth-child(3){
       font-size: 16px;
       color: #f43530;
     }
+  }
+  .submit-btn{
+    background: #e5e5e5;
+		font-size: 16px;
+		line-height: 42px;
   }
 }
 </style>

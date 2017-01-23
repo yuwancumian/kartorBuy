@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <span>{{title}}：</span>   {{text}}
+    <span class="title">{{title}}</span> :   <div>{{text}}</div>
   </div>
 </template>
 
@@ -12,11 +12,10 @@
 
 <style lang="less">
   .list{
-    line-height: 32px;
-    span{
+    line-height: 30px;
+    .title{
       display: inline-block;
-      width: 70px;
-      text-align: right;
+      width: 64px;
     }
   }
 </style>

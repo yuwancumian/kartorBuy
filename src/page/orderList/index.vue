@@ -28,7 +28,7 @@
                 <td>¥{{good.price}}</td>
               </tr>
               <tfoot class="tfoot">
-                <th colspan="3" style="text-align: right;font-weight: normal;">共 {{order.total_num}} 件商品，实付
+                <th colspan="3" style="text-align: right;font-weight: normal;">共 {{order.total_num}} 件商品，支付
                   <span class="total-price">¥ {{order.total_price}}</span>  
                 </th>
               </tfoot>
