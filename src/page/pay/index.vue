@@ -69,6 +69,7 @@
     </div>
 
     <app-title title="在线支付"></app-title>
+    <device />
     <footer class="active">
       <div>待支付 <span> ¥{{detail.price}}</span></div>
       <a  class="router-link-active" @click.prevent="handleClick">确定支付</a>

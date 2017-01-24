@@ -124,6 +124,7 @@
   </mt-tab-container-item>
   </mt-tab-container>
   <app-title title="订单"> </app-title>
+  <device />
 </div>
 </template>
 

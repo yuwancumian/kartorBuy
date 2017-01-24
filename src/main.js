@@ -7,14 +7,16 @@ import App from './app'
 import Mint from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import Title from  './libs/title.vue'
+import Device from './libs/device.vue'
 Vue.filter('tofix', function(value){
   return value.toFixed(2)
 })
 Vue.use(VueRouter)
-Vue.use(Mint);
+Vue.use(Mint)
 
 //Vue.component('app-header',require('./components/header/header.vue'))
 Vue.component('app-title', Title)
+Vue.component('device', Device)
 
 import Home from './page/home'
 import Goods from './page/goods'
