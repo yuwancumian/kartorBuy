@@ -22,7 +22,7 @@
 
     <div class="submit-btn" v-if="detail.status == 1">
       <p @click="submitCancel(detail.order_id)">取消订单</p>
-      <router-link :to="{path: '/pay', query: {order_id: detail.order_id}}">
+      <router-link class="tap-link" :to="{path: '/pay', query: {order_id: detail.order_id}}">
         <div>去支付</div>
       </router-link>
     </div>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="submit-btn" v-if="detail.status == 6 && detail.is_comment == 0">
-      <router-link :to="{path: '/rate', query: {order_id: detail.order_id, store_id: detail.store_id}}">
+      <router-link class="tap-link" :to="{path: '/rate', query: {order_id: detail.order_id, store_id: detail.store_id}}">
         <div class="filled">去评价</div>
       </router-link>
     </div>
