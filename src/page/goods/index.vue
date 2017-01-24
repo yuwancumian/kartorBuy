@@ -208,13 +208,19 @@ export default {
           if (rep.data.code == 2) {
               MessageBox({
                 title: '提示',
-                message: '抱歉，商品库存不足'
+                message: rep.data.message
               })
               return
             } else if (rep.data.code == 3) {
                MessageBox({
                 title: '提示',
                 message: '抱歉，商品已下架'
+              })
+              return
+            } else if (rep.data.code == 4) {
+               MessageBox({
+                title: '提示',
+                message: '抱歉，商店已歇业'
               })
               return
             } else if (rep.data.code == 5) {
@@ -229,10 +235,11 @@ export default {
                 message: '抱歉，您有未结束订单'
               })
               return
+            } else {
+              _this.order_id = rep.data.data.order_id
+              store.set('order_id', _this.order_id)
             }
-          _this.order_id = rep.data.data.order_id
-          store.set('order_id', _this.order_id)
-          next()
+            next()
         })
         .catch(function(error){
           console.log(error)
