@@ -44,6 +44,9 @@
       margin: auto;
       color: #333;
       text-decoration: none;
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
     }
     .active a{
       border-bottom: 1px solid #ffae00;

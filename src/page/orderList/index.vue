@@ -7,9 +7,9 @@
     <app-title title="订单"></app-title>
     <div class="ot-panel" 
     v-for="order in orders" 
-    v-if="orders.length > 0">
+    v-if="orders.length > 0 && show == true">
       <div class="ot-panel-bd">
-        <router-link 
+        <router-link class="tap-link"
           :to="{ path: 'order/detail', query: { order_id: order.order_id, store_id: order.store_id }}">
         <div class="row">
           <div class="col-3">
@@ -62,7 +62,7 @@
       </div>
       
     </div>
-    <div class="no-order" v-if="orders.length == 0">
+    <div class="no-order" v-if="orders.length == 0 && show == true">
       <img src="../../assets/images/no-order.png" alt="">
       <br>
       <br>
@@ -81,7 +81,8 @@
       return {
         orders: [],
         page: 1,
-        loading: false
+        loading: false,
+        show: false
       }
     },
     created(){
@@ -92,6 +93,7 @@
       getOrderList( user_id, page ).then(function(rep){
         Indicator.close()
         _this.orders = rep.data.data
+        _this.show = true
       })
     },
     methods: {
@@ -108,9 +110,7 @@
       },
       loadMore(){
         var _this = this
-        Indicator.open({
-          spinnerType: 'fading-circle'
-        })
+        Indicator.open()
         _this.loading = true
         var id = store.get('user_id')
         setTimeout(() => {
