@@ -1,7 +1,7 @@
 <template>
   <div class="ot-step" v-bind:class="{'no-desc': status != 1 && status != 4 && status !=5}">
     <slot>
-      <div class="ot-step-smile" v-if="status == 6 || status == 9"></div>
+      <div class="ot-step-smile" v-if="status == 6 || status == 12"></div>
       <div class="ot-step-dot" v-else></div>
     </slot>
     <div class="ot-step-main">
