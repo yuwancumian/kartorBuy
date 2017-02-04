@@ -133,6 +133,7 @@
         slide: [],
         is_active: false,
         is_two_sides: 0,
+        start: {},
         products:[
           {
             thumbnail: '',
