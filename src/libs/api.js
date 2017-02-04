@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const defaults = {
-  baseURL: 'http://172.20.5.72:8085/client/'
+  baseURL: 'http://172.19.14.217:8085/client/'
 }
 
 Object.assign(axios.defaults, defaults)

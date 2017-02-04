@@ -6,7 +6,7 @@
     </slot>
     <div class="ot-step-main">
       <div class="title">{{ status | statusToText }}
-        <span>{{label}}</span>
+        <span>{{label | dateToText}}</span>
       </div>
       <p v-if="status == 1">请耐心等待商家确定</p>
       <p v-if="status == 4">请尽快到达指定取货点</p>
@@ -65,6 +65,16 @@
             return '拒绝退款'
           case 12:
             return '退款成功'
+        }
+      },
+      dateToText (value) {
+        if (value) {
+          var dateArray = value.split('-')
+          var yy = dateArray[0]
+          var mm = dateArray[1]
+          var dd = dateArray[2].split(' ')[0]
+          var tt = dateArray[2].split(' ')[1]
+          return  mm + '月' + dd + '日 ' + tt
         }
       }
 
