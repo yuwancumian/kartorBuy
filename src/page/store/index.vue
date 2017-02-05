@@ -16,6 +16,10 @@
               歇业中
             </span>
           </div>
+          <div class="col-8" v-if="distance !=='公里'" style="font-size: 13px;text-align: right;padding-top: 2px">
+            距您 {{distance}}
+          </div>
+          <div class="col-8" v-else></div>
         </div>
         
         
@@ -106,6 +110,7 @@
         </ul>
       </div>
     </modal>
+    <div id="map" style="display:none"></div>  
     <app-title title="驾图购"> </app-title>
   </div>
 </template>
@@ -117,6 +122,8 @@
   import Star from './star.vue'
   import { MessageBox, Indicator, InfiniteScroll, Spinner, Swipe, SwipeItem } from 'mint-ui'
   import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder } from '../../libs/api.js'
+  import { getBmapD } from '../../libs/bMap.js'
+
   export default {
     data () {
       return {
@@ -146,7 +153,11 @@
         modal_display: false,
         goods_list:[],
         order_id: '',
-        url: ''
+        url: '',
+        lon: 0,
+        lat: 0,
+        end: {},
+        distance: '公里'
       }
     },
     components: {
@@ -204,6 +215,7 @@
       const _this = this
       const id = _this.$route.params.id
       const page = _this.page
+      const bdkey = 'heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ'
 
       Indicator.open()
       this.goods_list = []
@@ -223,6 +235,30 @@
         _this.slide = rep.data.data.picture.split(',').reverse()
         store.set('is_onsale', _this.is_onsale)
         console.log('created' +_this.store_name)
+
+        var lon = rep.data.data.longitude
+        var lat = rep.data.data.latitude
+        BMap.Convertor.translate( lon, lat,  bdkey, function (point, status, message) {
+          if(status) return console.log(message || "转换坐标出错:"+status, true);
+          _this.lon = point[0]['lng']
+          _this.lat = point[0]['lat']
+          console.log(_this.lat)
+          _this.end.lng = point[0]['lng']
+          _this.end.lat = point[0]['lat']
+          getBmapD(_this.end).then(function(rep){
+              _this.distance = rep.distance
+          }).catch(function (error) {
+              console.error(error); 
+          })
+          var x = setInterval(function(){
+            getBmapD(_this.end).then(function(rep){
+              _this.distance = rep.distance
+            }).catch(function (error) {
+                console.error(error); 
+            })
+          }, 60000)
+        })
+
       })
       getStoreNotice(id).then(function(rep){
         if (rep.data.data.discount) {

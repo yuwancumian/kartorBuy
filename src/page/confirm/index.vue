@@ -1,7 +1,7 @@
 <template>
   <div class="confirm">
-    <div class="tips">
-      预计您15分钟可到达取货店
+    <div class="tips" v-if="duration!=='分钟'&& show == true">
+      预计您{{duration}}可到达取货店
     </div>
     <div class="confirm-title">
       <div>
@@ -40,7 +40,8 @@
            <span class="icon-tele"></span>联系商家
         </a>
       </div>
-    </div>  
+    </div>
+    <div id="map" style="display:none"></div>  
     <app-title title="驾图购"> </app-title>
   </div>
 </template>
@@ -50,7 +51,7 @@
   import { Swipe, SwipeItem, MessageBox } from 'mint-ui'
   import { getOrderDetail, getStoreInfo } from '../../libs/api.js'
   import { submitOrderConfirm } from '../../libs/api.js'
-  import { transMap } from '../../libs/bdMap.js'
+  import { getBmapD } from '../../libs/bMap.js'
 
   export default {
     components: {
@@ -63,7 +64,10 @@
         detail: {},
         live_time: 0,
         lon: 0,
-        lat: 0
+        lat: 0,
+        end: {},
+        show: false,
+        duration: '分钟'
       }
     },
     created () {
@@ -72,7 +76,6 @@
       var order_id = _this.$route.query.order_id
       var store_id = _this.$route.query.store_id
       
-
 
       getOrderDetail(order_id).then(function(rep){
         _this.detail = rep.data.data
@@ -100,11 +103,25 @@
           _this.lon = point[0]['lng']
           _this.lat = point[0]['lat']
           console.log(_this.lat)
-        });
+          _this.end.lng = point[0]['lng']
+          _this.end.lat = point[0]['lat']
+          getBmapD(_this.end).then(function(rep){
+              _this.duration = rep.duration
+              _this.show = true
+          }).catch(function (error) {
+              console.error(error); 
+          })
+          var x = setInterval(function(){
+            getBmapD(_this.end).then(function(rep){
+              _this.duration = rep.duration
+              _this.show = true
+            }).catch(function (error) {
+              console.error(error); 
+            })
+          }, 60000)
+        })
+        
       })
-      
-
-              // axios.get('http://www.baidu.com')
   
     },
     methods: {
