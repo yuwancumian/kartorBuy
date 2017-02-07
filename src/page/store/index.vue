@@ -16,7 +16,7 @@
               歇业中
             </span>
           </div>
-          <div class="col-8" v-if="distance !=='公里'" style="font-size: 13px;text-align: right;padding-top: 2px">
+          <div class="col-8 store-distance" v-if="distance !=='公里'">
             距您 {{distance}}
           </div>
           <div class="col-8" v-else></div>
@@ -121,7 +121,7 @@
   import Modal from '../../components/modal'
   import Star from './star.vue'
   import { MessageBox, Indicator, InfiniteScroll, Spinner, Swipe, SwipeItem } from 'mint-ui'
-  import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder } from '../../libs/api.js'
+  import { getStoreInfo, getGoodsList, getStoreNotice, submitOrder, getCarPosition } from '../../libs/api.js'
   import { getBmapD } from '../../libs/bMap.js'
 
   export default {
@@ -236,27 +236,32 @@
         store.set('is_onsale', _this.is_onsale)
         console.log('created' +_this.store_name)
 
-        var lon = rep.data.data.longitude
-        var lat = rep.data.data.latitude
-        BMap.Convertor.translate( lon, lat,  bdkey, function (point, status, message) {
-          if(status) return console.log(message || "转换坐标出错:"+status, true);
-          _this.lon = point[0]['lng']
-          _this.lat = point[0]['lat']
-          console.log(_this.lat)
-          _this.end.lng = point[0]['lng']
-          _this.end.lat = point[0]['lat']
-          getBmapD(_this.end).then(function(rep){
+        var dots = []
+        dots.push({})
+        dots[0]['lon'] = rep.data.data.longitude
+        dots[0]['lat'] = rep.data.data.latitude
+        var open_car_id = store.get('open_car_id')
+        getCarPosition(open_car_id).then(function(rep){
+          dots.push({})
+          dots[1]['lon'] = rep.data.data.longitude
+          dots[1]['lat'] = rep.data.data.latitude
+          BMap.Convertor.trans(dots, bdkey, function(points,status, message){
+            if(status) return console.log(message || "转换坐标出错:"+status, true);
+            getBmapD(points[0],points[1]).then(function(rep){
               _this.distance = rep.distance
-          }).catch(function (error) {
-              console.error(error); 
-          })
-          var x = setInterval(function(){
-            getBmapD(_this.end).then(function(rep){
-              _this.distance = rep.distance
+              _this.show = true
             }).catch(function (error) {
                 console.error(error); 
             })
-          }, 60000)
+            var x = setInterval(function(){
+              getBmapD(points[0],points[1]).then(function(rep){
+                _this.distance = rep.distance
+                _this.show = true
+              }).catch(function (error) {
+                  console.error(error); 
+              })
+            },60000)
+          })
         })
 
       })

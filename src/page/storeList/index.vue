@@ -94,7 +94,6 @@
         })
       getUserInfo().then(function(rep){
         _this.user_id = rep.data.data.user_id
-        // _this.user_id = 42
         _this.license_plate = rep.data.data.license_plate
         _this.contact_name = rep.data.data.real_name
         _this.contact_mobile = rep.data.data.contact_mobile
@@ -110,6 +109,9 @@
         if ( _this.contact_mobile) {
           store.set('contact_mobile', _this.contact_mobile)
         }
+        if ( _this.open_car_id) {
+          store.set('open_car_id', _this.open_car_id)
+        }
         getCarPosition(_this.open_car_id)
         .then(function(rep){
           store.set('car_position',rep.data.data)
@@ -123,7 +125,11 @@
         if (rep.data.data.length > 0) {
           _this.$router.push({ 
              path: 'confirm', 
-             query: { order_id: rep.data.data[0]['order_id'], store_id: rep.data.data[0]['store_id'] }
+             query: { 
+               order_id: rep.data.data[0]['order_id'], 
+               store_id: rep.data.data[0]['store_id']
+              //  time: new Date().getTime 
+              }
             })
          }
       })

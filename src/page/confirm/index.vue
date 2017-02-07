@@ -1,7 +1,7 @@
 <template>
   <div class="confirm">
-    <div class="tips" v-if="duration!=='分钟'&& show == true">
-      预计您{{duration}}可到达取货店
+    <div class="tips" v-if="duration!=='分钟'">
+      预计你{{duration}}可到达取货点
     </div>
     <div class="confirm-title">
       <div>
@@ -27,8 +27,11 @@
         </mt-swipe-item>
       </mt-swipe>
     </div> 
-    <div class="submit-btn" @click="handleConfirm">
-      <a>确定收货</a>
+    <div class="submit-btn" v-if="detail.status == 9 || detail.status == 7">
+      <p> 订单{{ detail.status | statusToText }}</p>
+    </div>
+    <div class="submit-btn" @click="handleConfirm" v-else>
+      <a style="display: block; margin-top: 6px">确定收货</a>
       <span>  {{live_time}} 系统将自动确认收货</span>
     </div>
     <div class="confirm-link">
@@ -49,7 +52,7 @@
 <script>
   import AppFooter from '../../components/footer'
   import { Swipe, SwipeItem, MessageBox } from 'mint-ui'
-  import { getOrderDetail, getStoreInfo } from '../../libs/api.js'
+  import { getOrderDetail, getStoreInfo, getCarPosition } from '../../libs/api.js'
   import { submitOrderConfirm } from '../../libs/api.js'
   import { getBmapD } from '../../libs/bMap.js'
 
@@ -95,31 +98,60 @@
       getStoreInfo(store_id).then(function(rep){
         console.log(rep.data.data.longitude)
         _this.contact_phone = rep.data.data.contact_phone
-        var lon = rep.data.data.longitude
-        var lat = rep.data.data.latitude
         _this.slide = rep.data.data.picture.split(',')
-        BMap.Convertor.translate( lon, lat,  bdkey, function (point, status, message) {
-          if(status) return console.log(message || "转换坐标出错:"+status, true);
-          _this.lon = point[0]['lng']
-          _this.lat = point[0]['lat']
-          console.log(_this.lat)
-          _this.end.lng = point[0]['lng']
-          _this.end.lat = point[0]['lat']
-          getBmapD(_this.end).then(function(rep){
-              _this.duration = rep.duration
-              _this.show = true
-          }).catch(function (error) {
-              console.error(error); 
-          })
-          var x = setInterval(function(){
-            getBmapD(_this.end).then(function(rep){
+        var dots = []
+        dots.push({})
+        dots[0]['lon'] = rep.data.data.longitude
+        dots[0]['lat'] = rep.data.data.latitude
+        var open_car_id = store.get('open_car_id')
+        getCarPosition(open_car_id).then(function(rep){
+          dots.push({})
+          dots[1]['lon'] = rep.data.data.longitude
+          dots[1]['lat'] = rep.data.data.latitude
+          BMap.Convertor.trans(dots, bdkey, function(points,status, message){
+            if(status) return console.log(message || "转换坐标出错:"+status, true);
+            _this.lon = points[0]['lng']
+            _this.lat = points[0]['lat']
+
+            getBmapD(points[0],points[1]).then(function(rep){
               _this.duration = rep.duration
               _this.show = true
             }).catch(function (error) {
-              console.error(error); 
+                console.error(error); 
             })
-          }, 60000)
+            var x = setInterval(function(){
+              getBmapD(points[0],points[1]).then(function(rep){
+                _this.duration = rep.duration
+                _this.show = true
+              }).catch(function (error) {
+                  console.error(error); 
+              })
+            },60000)
+          })
         })
+        
+        // BMap.Convertor.translate( lon, lat,  bdkey, function (point, status, message) {
+        //   if(status) return console.log(message || "转换坐标出错:"+status, true);
+        //   _this.lon = point[0]['lng']
+        //   _this.lat = point[0]['lat']
+        //   console.log(_this.lat)
+        //   _this.end.lng = point[0]['lng']
+        //   _this.end.lat = point[0]['lat']
+          // getBmapD(_this.end).then(function(rep){
+          //     _this.duration = rep.duration
+          //     _this.show = true
+          // }).catch(function (error) {
+          //     console.error(error); 
+          // })
+          // var x = setInterval(function(){
+          //   getBmapD(_this.end).then(function(rep){
+          //     _this.duration = rep.duration
+          //     _this.show = true
+          //   }).catch(function (error) {
+          //     console.error(error); 
+          //   })
+          // }, 60000)
+        //})
         
       })
   
