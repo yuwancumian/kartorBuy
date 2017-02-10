@@ -74,10 +74,6 @@ var routes = [
     component: Rate
   },
   {
-    path: '/test',
-    component: Test
-  },
-  {
     path: '/inputInfo',
     component: InputInfo
   }

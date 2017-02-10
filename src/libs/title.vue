@@ -14,7 +14,8 @@
       var reqData = {'title': this.title};
 			JSBridge.callAPI('AppAPI.setTitle', reqData, function(json){
 					
-			});
+			})
+      
     }
   }
 </script>

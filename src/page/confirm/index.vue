@@ -45,7 +45,6 @@
       </div>
     </div>
     <div id="map" style="display:none"></div>  
-    <app-title title="驾图购"> </app-title>
   </div>
 </template>
 
@@ -152,9 +151,18 @@
           //   })
           // }, 60000)
         //})
-        
       })
   
+    },
+    mounted(){
+      if (!('JSBridge' in window)) {
+          return
+      }
+      var reqData = {'title': '驾图购'};
+      setTimeout(function(){
+        JSBridge.callAPI('AppAPI.setTitle', reqData, function(json){			
+			  })
+      },500)
     },
     methods: {
       handleConfirm () {
@@ -199,6 +207,9 @@
         return 'appcall://mapnav?endname=test&endlng='+ _this.lon + '&endlat=' + _this.lat
       }
     },
+    // beforeRouteLeave (to, from, next) {
+    //   console.log(111)
+    // },
     filters: {
       statusToText (value) {
         switch (value) {

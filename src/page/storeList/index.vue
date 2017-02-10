@@ -22,6 +22,7 @@
       return {
         shops:[
         ],
+        moved: true,
         user_id: 0,
         license_plate: '',
         contact_name: '',
@@ -29,10 +30,11 @@
         open_car_id: 0
       }
 
-    },
+    },  
     created(){
       var _this = this
       const bdkey = 'heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ'
+
       getShopList()
         .then(function(rep){
           _this.shops = rep.data.data
@@ -98,7 +100,7 @@
         _this.contact_name = rep.data.data.real_name
         _this.contact_mobile = rep.data.data.contact_mobile
         _this.open_car_id = rep.data.data.open_car_id
-
+        debugger
         store.set('user_id',_this.user_id)
         if ( _this.license_plate ) {
           store.set('license_plate',_this.license_plate)
@@ -122,7 +124,7 @@
         })
       })
       getOrderNotend(store.get('user_id')).then(function(rep){
-        if (rep.data.data.length > 0) {
+        if (rep.data.data.length > 0 && _this.moved) {
           _this.$router.push({ 
              path: 'confirm', 
              query: { 
@@ -134,6 +136,20 @@
          }
       })
       
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        // 通过 `vm` 访问组件实例
+        if(from.path === '/confirm') {
+
+          vm.moved = false
+          var reqData = {};
+          JSBridge.callAPI('AppAPI.close', reqData, function(json){
+            
+          })
+        } 
+      })
+      // 
     }
   }
 </script>

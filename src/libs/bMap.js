@@ -26,7 +26,7 @@ function getBmapD (start,end) {
     // var p1 = new BMap.Point(start.lng,start.lat)
     var p1 = new BMap.Point(start.lng,start.lat)
     var p2 = new BMap.Point(end.lng,end.lat)
-    debugger
+
     var searchComplete = function (results){
       if (driving.getStatus() != BMAP_STATUS_SUCCESS){
           return ;
