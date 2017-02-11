@@ -29,7 +29,6 @@ import Confirm from './page/confirm'
 import StoreList from './page/storeList'
 import OrderList from './page/orderList'
 import InputInfo from './page/inputInfo'
-import Test from './page/test'
 
 var routes = [
   {

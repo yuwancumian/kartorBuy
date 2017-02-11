@@ -216,7 +216,7 @@
       const id = _this.$route.params.id
       const page = _this.page
       const bdkey = 'heM8vbaENjtTNGRMAEBwqzm8x6UCcYnZ'
-
+      store.set("store_id", _this.$route.params.id)
       Indicator.open()
       this.goods_list = []
       if ( store.get('contact_name') && store.get('contact_mobile') ) {
