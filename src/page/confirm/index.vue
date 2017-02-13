@@ -27,7 +27,7 @@
         </mt-swipe-item>
       </mt-swipe>
     </div> 
-    <div class="submit-btn" v-if="detail.status == 9 || detail.status == 7">
+    <div class="submit-btn" v-if="detail.status == 9 || detail.status == 7 || detail.status == 6">
       <p> 订单{{ detail.status | statusToText }}</p>
     </div>
     <div class="submit-btn" @click="handleConfirm" v-else>

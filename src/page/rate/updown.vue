@@ -1,7 +1,7 @@
 <template>
   <div class="like">
-    <a class="icon-like" href="javascript: void(0)" @click="toggleUp" :class="{active: up}"></a>
-    <a class="icon-dislike" href="javascript: void(0)" @click="toggleDown" :class="{active: down}"></a>  
+    <a class="icon-like tap-link" href="javascript: void(0)" @click="toggleUp" :class="{active: up}"></a>
+    <a class="icon-dislike tap-link" href="javascript: void(0)" @click="toggleDown" :class="{active: down}"></a>  
   </div>
 </template>
 

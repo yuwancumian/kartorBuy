@@ -16,7 +16,7 @@
 
 <script>
   import { MessageBox, Field, Indicator } from 'mint-ui'
-  import { completeUserInfo } from '../../libs/api.js'
+  import { completeUserInfo, submitOrderRemark } from '../../libs/api.js'
   //import axios from 'axios'
   export default {
     components:{
@@ -71,8 +71,20 @@
            
             } else {
              
-              _this.order_id = store.get('order_id')
-              _this.$router.push({ path:'pay', query: {order_id: _this.order_id}})
+             const remark_data = {
+              order_id: store.get('order_id'),
+              user_id: store.get('user_id'),
+              contact_name: _this.contact_name,
+              contact_mobile: _this.contact_mobile,
+              remark: _this.order_remark
+             }
+             submitOrderRemark(remark_data).then(function(rep){
+                if(rep.data.code == 0){
+                  _this.$router.push({ path:'pay', query: {order_id: store.get('order_id')}})
+                }
+              }) 
+              
+              
               }
             })
             .catch(function(err){

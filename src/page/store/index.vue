@@ -232,7 +232,10 @@
         _this.avg_rating = rep.data.data.avg_rating
         _this.is_onsale = rep.data.data.is_onsale
         _this.is_two_sides = rep.data.data.is_two_sides
-        _this.slide = rep.data.data.picture.split(',').reverse()
+        if (rep.data.data.picture) {
+          _this.slide = rep.data.data.picture.split(',').reverse()
+        }
+        
         store.set('is_onsale', _this.is_onsale)
         console.log('created' +_this.store_name)
 
@@ -302,7 +305,7 @@
           var header_height = shop_header.offsetHeight
           shop_header.style.position = 'fixed'
           content.style.marginTop = header_height + 'px'
-      },200)
+      },500)
     },
 
     beforeRouteLeave ( to, from, next ) {
@@ -325,8 +328,8 @@
             user_id: store.get("user_id"),
             store_id: this.$route.params.id,
             license_plate: store.get('license_plate'),
-            contact_name: store.get("contact_name"),
-            contact_mobile: store.get("contact_mobile"),
+            contact_name: store.get("contact_name") || '',
+            contact_mobile: store.get("contact_mobile")|| '',
             goods_list: this.goods_list
           }
 

@@ -195,8 +195,8 @@ export default {
           user_id: store.get("user_id"),
           store_id: store.get("store_id"),
           license_plate: store.get('license_plate'),
-          contact_name: store.get("contact_name"),
-          contact_mobile: store.get("contact_mobile"),
+          contact_name: store.get("contact_name") || '',
+          contact_mobile: store.get("contact_mobile") || '',
           goods_list: this.goods_list
         }
 
