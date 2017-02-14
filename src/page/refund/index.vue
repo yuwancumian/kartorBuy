@@ -158,6 +158,13 @@
           })
           return
         }
+        if (!(/^-?\d+\.?\d*$/).test(_this.refund_money)){
+          MessageBox({
+            title: '提示',
+            message: '请输入正确的退款金额'
+          })
+          return
+        }
 
         console.log(_this.order_price)
         if ( _this.refund_money > _this.order_price ) {
