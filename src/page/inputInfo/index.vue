@@ -71,27 +71,24 @@
            
             } else {
              
-             const remark_data = {
-              order_id: store.get('order_id'),
-              user_id: store.get('user_id'),
-              contact_name: _this.contact_name,
-              contact_mobile: _this.contact_mobile,
-              remark: _this.order_remark
-             }
-             submitOrderRemark(remark_data).then(function(rep){
+              const remark_data = {
+                order_id: store.get('order_id'),
+                user_id: store.get('user_id'),
+                contact_name: _this.contact_name,
+                contact_mobile: _this.contact_mobile,
+                remark: _this.order_remark
+              }
+              submitOrderRemark(remark_data).then(function(rep){
                 if(rep.data.code == 0){
                   _this.$router.push({ path:'pay', query: {order_id: store.get('order_id')}})
                 }
               }) 
-              
-              
-              }
-            })
-            .catch(function(err){
-              Indicator.close()
-              console.log(err) 
             }
-          )
+          })
+          .catch(function(err){
+            Indicator.close()
+            console.log(err) 
+          })
         } else {
           if ( _this.contact_name ==='') {
             MessageBox('提示', '请输入您的称呼')
