@@ -6,7 +6,7 @@
       </router-link>
     </div>
     <div class="col-11">
-      <router-link :to="{path: '/goods/'+ product.goods_id}">
+      <router-link :to="{path: '/goods/'+ product.goods_id}" class="title-link tap-link">
       <ul class="item-info">
         <li>
             {{product.name}}

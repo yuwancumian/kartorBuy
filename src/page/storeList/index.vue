@@ -49,8 +49,8 @@
           console.log(new_shops)
           
           var map = new BMap.Map("allmap");
-          var point = new BMap.Point(106.539594,29.579195);
-          map.centerAndZoom(point, 13);
+          var point = new BMap.Point(106.507152,29.617994);
+          map.centerAndZoom(point, 16);
           map.disableDoubleClickZoom(true);
           var iconDrink = new BMap.Icon(require('../../assets/images/icon-drink.png'),new BMap.Size(28,54),{//是引用图标的名字以及大小，注意大小要一样
             anchor: new BMap.Size(10, 30)//这句表示图片相对于所加的点的位置
@@ -61,7 +61,7 @@
           var iconSiga = new BMap.Icon(require('../../assets/images/icon-siga.png'), new BMap.Size(28,47),{
             anchor: new BMap.Size(10, 30)
           })
-          var iconShop = new BMap.Icon(require('../../assets/images/icon-shop.png'), new BMap.Size(50,41),{
+          var iconShop = new BMap.Icon(require('../../assets/images/icon-shop.png'), new BMap.Size(45,37),{
             anchor: new BMap.Size(10, 30)
           })
           BMap.Convertor.trans(new_shops, bdkey, function (points, status, message) {
