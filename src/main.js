@@ -79,13 +79,13 @@ var routes = [
 
 ]
 var router = new VueRouter({
-  routes // （缩写）相当于 routes: routes
+  routes 
 })
 
 
-// new Vue({
-//   router
-// }).$mount('#app');
+new Vue({
+  router
+}).$mount('#app');
 new Vue(
   Vue.util.extend({router}, App)
 ).$mount('#app')

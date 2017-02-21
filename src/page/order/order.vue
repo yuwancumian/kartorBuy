@@ -44,7 +44,7 @@
       </router-link>
     </div>
     <div class="service-tools" >
-      <a href="tel: 4008054288" class="icon-phone tap-link" ></a>
+      <a :href="contact_phone" class="icon-phone tap-link" ></a>
       <a href="tel: 4008054288" class="icon-tell tap-link" v-if="detail.status == 6 || detail.status == 11"></a>
     </div>
 
@@ -152,6 +152,7 @@ export default {
         order_code: '',
         license_plate: '',
         contact_mobile: '',
+        contact_phone: '',
         contact_name: ''
       },
       opt: [
@@ -173,6 +174,9 @@ export default {
       _this.detail = rep.data.data
       if ( _this.detail.remark ) {
         _this.mark = _this.detail.remark.replace(/(^\s+)|(\s+$)/g, "");
+      }
+      if ( _this.detail.contact_phone ) {
+        _this.contact_phone = 'tel: '+ _this.detail.contact_phone
       }
       _this.slide = _this.detail.picture.split(',')
       store.set('slide', _this.slide);
